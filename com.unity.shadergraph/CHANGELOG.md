@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - In HDRP, the `Position` port for the `Object` node now returns the absolute world position.
 - The `Baked GI`, `Reflection Probe`, and `Ambient` nodes are now in the `Input/Lighting` category.
 - The master node no longer has its own preview, because it was redundant. You can see the results for the master node in the Main Preview.
+- Errors in the compiled shader are now displayed as badges on the appropriate node
 
 ### Fixed
 - Shadow projection is now correct when using the `Unlit` master node with HD Render Pipeline.
