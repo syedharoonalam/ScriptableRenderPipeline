@@ -155,6 +155,8 @@ namespace UnityEditor.ShaderGraph.Drawing
 
             if (node.hasErrors)
             {
+                // Maybe want to create some UI that can show multiple errors, for now just show first one
+                // since that's what GraphView offers.
                 AttachError(node.GetErrors().First().message);
             }
 

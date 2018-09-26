@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor.Graphing;
 using UnityEngine;
 using System.Linq;
-using UnityEditor.SceneManagement;
 
 namespace UnityEditor.ShaderGraph
 {
@@ -282,6 +281,7 @@ namespace UnityEditor.ShaderGraph
                 // TODO: Specify actual validation errors after cleaning up this validation code
                 AddError(new ShaderError("Error found during validation."));
             }
+            else
             {
                 ++version;
             }
