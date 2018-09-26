@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Interfaces;
 using UnityEngine;
 using UnityEditor.Graphing;
 
 namespace UnityEditor.ShaderGraph
 {
     [Serializable]
-    public abstract class AbstractMaterialNode : INode, ISerializationCallbackReceiver, IGenerateProperties
+    public abstract class AbstractMaterialNode : INode, ISerializationCallbackReceiver, IGenerateProperties, IMayHaveErrors
     {
         protected static List<MaterialSlot> s_TempSlots = new List<MaterialSlot>();
         protected static List<IEdge> s_TempEdges = new List<IEdge>();
@@ -39,7 +40,7 @@ namespace UnityEditor.ShaderGraph
         List<SerializationHelper.JSONSerializedElement> m_SerializableSlots = new List<SerializationHelper.JSONSerializedElement>();
 
         [NonSerialized]
-        private bool m_HasError;
+        List<ShaderError> m_Errors = new List<ShaderError>();
 
         public Identifier tempId { get; set; }
 
@@ -143,12 +144,43 @@ namespace UnityEditor.ShaderGraph
             get { return true; }
         }
 
+        // This is from INode
         public virtual bool hasError
         {
-            get { return m_HasError; }
-            protected set { m_HasError = value; }
+            get { return m_Errors.Count > 0; }
+        }
+        
+        // This is from IMayHaveErrors
+        public bool hasErrors
+        {
+            get { return m_Errors.Count > 0; }
         }
 
+        public int errorCount
+        {
+            get { return m_Errors.Count; }
+        }
+
+        public IEnumerable<ShaderError> GetErrors()
+        {
+            return m_Errors;
+        }
+
+        public void AddError(ShaderError error)
+        {
+            m_Errors.Add(error);
+        }
+
+        public void AddErrors(IEnumerable<ShaderError> errors)
+        {
+            m_Errors.AddRange(errors);
+        }
+
+        public void ClearErrors()
+        {
+            m_Errors.Clear();
+        }
+        
         string m_DefaultVariableName;
         string m_NameForDefaultVariableName;
         Guid m_GuidForDefaultVariableName;
@@ -437,9 +469,13 @@ namespace UnityEditor.ShaderGraph
             GetOutputSlots(s_TempSlots);
             isInError |= s_TempSlots.Any(x => x.hasError);
             isInError |= CalculateNodeHasError();
-            hasError = isInError;
 
-            if (!hasError)
+            if (isInError)
+            {
+                // TODO: Specify actual validation errors after cleaning up this validation code
+                AddError(new ShaderError("Error found during validation."));
+            }
+            else
             {
                 ++version;
             }

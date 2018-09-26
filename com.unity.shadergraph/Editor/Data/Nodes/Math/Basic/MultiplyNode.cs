@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Graphing;
 using UnityEngine;
 using System.Linq;
+using UnityEditor.SceneManagement;
 
 namespace UnityEditor.ShaderGraph
 {
@@ -275,9 +276,12 @@ namespace UnityEditor.ShaderGraph
             GetOutputSlots(s_TempSlots);
             isInError |= s_TempSlots.Any(x => x.hasError);
             isInError |= CalculateNodeHasError();
-            hasError = isInError;
 
-            if (!hasError)
+            if (isInError)
+            {
+                // TODO: Specify actual validation errors after cleaning up this validation code
+                AddError(new ShaderError("Error found during validation."));
+            }
             {
                 ++version;
             }

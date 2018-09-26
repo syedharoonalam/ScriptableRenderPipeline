@@ -314,8 +314,8 @@ namespace UnityEditor.ShaderGraph
                 referencedGraph.OnEnable();
                 referencedGraph.ValidateGraph();
 
-                if (referencedGraph.GetNodes<INode>().Any(x => x.hasError))
-                    hasError = true;
+                foreach(var node in referencedGraph.GetNodes<AbstractMaterialNode>().Where(x => x.hasErrors))
+                    AddErrors(node.GetErrors());
             }
 
             ValidateShaderStage();

@@ -388,6 +388,12 @@ namespace UnityEditor.ShaderGraph.Drawing
                                     message.AppendLine("Shader compilation error in {3} at line {1} (on {2}):\n{0}", error.message, error.line, error.platform, node != null ? string.Format("node {0} ({1})", node.name, node.guid) : "graph");
                                     message.AppendLine(error.messageDetails);
                                     message.AppendNewLine();
+
+                                    var errNode = m_Graph.GetNodes<AbstractMaterialNode>().First(graphNode => graphNode == node);
+                                    if (errNode != null)
+                                    {
+                                        errNode.AddError(error);
+                                    }
                                 }
                                 catch
                                 {

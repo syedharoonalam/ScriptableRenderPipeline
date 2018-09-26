@@ -149,11 +149,13 @@ namespace UnityEditor.ShaderGraph.Drawing
             {
                 if (!masterNode.IsPipelineCompatible(GraphicsSettings.renderPipelineAsset))
                 {
-                    IconBadge wrongPipeline = IconBadge.CreateError("The current render pipeline is not compatible with this master node.");
-                    Add(wrongPipeline);
-                    VisualElement title = this.Q("title");
-                    wrongPipeline.AttachTo(title, SpriteAlignment.LeftCenter);
+                    AttachError("The current render pipeline is not compatible with this master node.");
                 }
+            }
+
+            if (node.hasErrors)
+            {
+                AttachError(node.GetErrors().First().message);
             }
 
             m_PortInputContainer.SendToBack();
@@ -194,6 +196,14 @@ namespace UnityEditor.ShaderGraph.Drawing
 
                 RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
             }
+        }
+
+        public void AttachError(string errString)
+        {
+            var wrongPipeline = IconBadge.CreateError(errString);
+            Add(wrongPipeline);
+            var title = this.Q("title");
+            wrongPipeline.AttachTo(title, SpriteAlignment.LeftCenter);
         }
 
         void OnGeometryChanged(GeometryChangedEvent evt)
