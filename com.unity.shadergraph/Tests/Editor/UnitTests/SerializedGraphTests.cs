@@ -72,12 +72,12 @@ namespace UnityEditor.Graphing.UnitTests
         {
             public void SetError()
             {
-                hasError = true;
+                AddError(new ShaderError("TestError"));
             }
 
             public void ClearError()
             {
-                hasError = false;
+                ClearErrors();
             }
         }
 
