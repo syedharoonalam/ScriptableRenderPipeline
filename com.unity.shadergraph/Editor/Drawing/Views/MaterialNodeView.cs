@@ -153,7 +153,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 }
             }
 
-            if (node.hasErrors)
+            if (node.hasError)
             {
                 // Maybe want to create some UI that can show multiple errors, for now just show first one
                 // since that's what GraphView offers.

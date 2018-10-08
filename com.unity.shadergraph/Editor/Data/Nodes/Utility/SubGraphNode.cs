@@ -314,7 +314,7 @@ namespace UnityEditor.ShaderGraph
                 referencedGraph.OnEnable();
                 referencedGraph.ValidateGraph();
 
-                foreach(var node in referencedGraph.GetNodes<AbstractMaterialNode>().Where(x => x.hasErrors))
+                foreach(var node in referencedGraph.GetNodes<AbstractMaterialNode>().Where(x => x.hasError))
                     AddErrors(node.GetErrors());
             }
 

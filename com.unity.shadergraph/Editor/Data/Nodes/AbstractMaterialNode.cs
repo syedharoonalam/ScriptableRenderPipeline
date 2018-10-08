@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Data.Interfaces;
 using UnityEngine;
 using UnityEditor.Graphing;
 
 namespace UnityEditor.ShaderGraph
 {
     [Serializable]
-    public abstract class AbstractMaterialNode : INode, ISerializationCallbackReceiver, IGenerateProperties, IMayHaveErrors
+    public abstract class AbstractMaterialNode : INode, ISerializationCallbackReceiver, IGenerateProperties
     {
         protected static List<MaterialSlot> s_TempSlots = new List<MaterialSlot>();
         protected static List<IEdge> s_TempEdges = new List<IEdge>();
@@ -150,12 +149,6 @@ namespace UnityEditor.ShaderGraph
             get { return m_Messages.Count > 0; }
         }
         
-        // This is from IMayHaveErrors
-        public bool hasErrors
-        {
-            get { return m_Messages.Count > 0; }
-        }
-
         public int errorCount
         {
             get { return m_Messages.Count; }
