@@ -376,7 +376,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         bool uberShaderHasError = false;
                         if (ShaderUtil.ShaderHasError(m_ColorShader))
                         {
-                            var errors = ShaderUtil.GetShaderErrors(m_ColorShader);
+                            var errors = ShaderUtil.GetShaderMessages(m_ColorShader);
                             var message = new ShaderStringBuilder();
                             message.AppendLine(@"Preview shader for graph has {0} error{1}:", errors.Length, errors.Length != 1 ? "s" : "");
                             foreach (var error in errors)
@@ -401,7 +401,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                                 }
                             }
                             Debug.LogWarning(message.ToString());
-                            ShaderUtil.ClearShaderErrors(m_ColorShader);
+                            ShaderUtil.ClearShaderMessages(m_ColorShader);
                             ShaderUtil.UpdateShaderAsset(m_ColorShader, k_EmptyShader);
                             uberShaderHasError = true;
                         }
@@ -493,7 +493,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             {
                 if (shaderData.shader != null)
                 {
-                    ShaderUtil.ClearShaderErrors(shaderData.shader);
+                    ShaderUtil.ClearShaderMessages(shaderData.shader);
                     Object.DestroyImmediate(shaderData.shader, true);
                     shaderData.shader = null;
                 }
@@ -507,14 +507,14 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
             else
             {
-                ShaderUtil.ClearShaderErrors(shaderData.shader);
+                ShaderUtil.ClearShaderMessages(shaderData.shader);
                 ShaderUtil.UpdateShaderAsset(shaderData.shader, shaderData.shaderString);
             }
 
             // Debug output
             if (ShaderUtil.ShaderHasError(shaderData.shader))
             {
-                var errors = ShaderUtil.GetShaderErrors(shaderData.shader);
+                var errors = ShaderUtil.GetShaderMessages(shaderData.shader);
                 foreach (var error in errors)
                     Debug.LogFormat("Compilation error in {3} at line {1} (on {2}):\n{0}", error.message, error.line, error.platform, "graph");
                 shaderData.hasError = true;
@@ -523,7 +523,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                     var message = "RecreateShader: " + node.GetVariableNameForNode() + Environment.NewLine + shaderData.shaderString;
                     Debug.LogWarning(message);
                 }
-                ShaderUtil.ClearShaderErrors(shaderData.shader);
+                ShaderUtil.ClearShaderMessages(shaderData.shader);
                 Object.DestroyImmediate(shaderData.shader, true);
                 shaderData.shader = null;
             }

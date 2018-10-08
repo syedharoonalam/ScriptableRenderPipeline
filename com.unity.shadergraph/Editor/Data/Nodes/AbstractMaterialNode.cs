@@ -40,7 +40,7 @@ namespace UnityEditor.ShaderGraph
         List<SerializationHelper.JSONSerializedElement> m_SerializableSlots = new List<SerializationHelper.JSONSerializedElement>();
 
         [NonSerialized]
-        List<ShaderError> m_Errors = new List<ShaderError>();
+        List<ShaderMessage> m_Messages = new List<ShaderMessage>();
 
         public Identifier tempId { get; set; }
 
@@ -147,38 +147,38 @@ namespace UnityEditor.ShaderGraph
         // This is from INode
         public virtual bool hasError
         {
-            get { return m_Errors.Count > 0; }
+            get { return m_Messages.Count > 0; }
         }
         
         // This is from IMayHaveErrors
         public bool hasErrors
         {
-            get { return m_Errors.Count > 0; }
+            get { return m_Messages.Count > 0; }
         }
 
         public int errorCount
         {
-            get { return m_Errors.Count; }
+            get { return m_Messages.Count; }
         }
 
-        public IEnumerable<ShaderError> GetErrors()
+        public IEnumerable<ShaderMessage> GetErrors()
         {
-            return m_Errors;
+            return m_Messages;
         }
 
-        public void AddError(ShaderError error)
+        public void AddError(ShaderMessage error)
         {
-            m_Errors.Add(error);
+            m_Messages.Add(error);
         }
 
-        public void AddErrors(IEnumerable<ShaderError> errors)
+        public void AddErrors(IEnumerable<ShaderMessage> errors)
         {
-            m_Errors.AddRange(errors);
+            m_Messages.AddRange(errors);
         }
 
         public void ClearErrors()
         {
-            m_Errors.Clear();
+            m_Messages.Clear();
         }
         
         string m_DefaultVariableName;
@@ -473,7 +473,7 @@ namespace UnityEditor.ShaderGraph
             if (isInError)
             {
                 // TODO: Specify actual validation errors after cleaning up this validation code
-                AddError(new ShaderError("Error found during validation."));
+                AddError(new ShaderMessage("Error found during validation."));
             }
             else
             {

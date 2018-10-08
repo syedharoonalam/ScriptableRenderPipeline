@@ -125,7 +125,7 @@ namespace UnityEditor.ShaderGraph.UnitTests
         public void CanSetAndRetrieveErrors()
         {
             var expected = "TestError";
-            m_NodeA.AddError(new ShaderError(expected));
+            m_NodeA.AddError(new ShaderMessage(expected));
             
             Assert.IsTrue(m_NodeA.hasError);
             Assert.IsTrue(m_NodeA.hasErrors);
@@ -136,11 +136,11 @@ namespace UnityEditor.ShaderGraph.UnitTests
         [Test]
         public void CanAddMultipleErrors()
         {
-            var errors = new List<ShaderError>
+            var errors = new List<ShaderMessage>
             {
-                new ShaderError("Err1"),
-                new ShaderError("Err2"),
-                new ShaderError("Err3")
+                new ShaderMessage("Err1"),
+                new ShaderMessage("Err2"),
+                new ShaderMessage("Err3")
             };
             m_NodeA.AddErrors(errors);
             
@@ -153,7 +153,7 @@ namespace UnityEditor.ShaderGraph.UnitTests
         public void CanClearErrors()
         {
             var expected = "TestError";
-            m_NodeA.AddError(new ShaderError(expected));
+            m_NodeA.AddError(new ShaderMessage(expected));
             m_NodeA.ClearErrors();
             
             Assert.IsFalse(m_NodeA.hasError);

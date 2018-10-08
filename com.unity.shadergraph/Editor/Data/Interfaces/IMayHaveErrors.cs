@@ -8,9 +8,9 @@ namespace Data.Interfaces
         bool hasErrors { get; }
         int errorCount { get; }
 
-        IEnumerable<ShaderError> GetErrors();
-        void AddError(ShaderError error);
-        void AddErrors(IEnumerable<ShaderError> errors);
+        IEnumerable<ShaderMessage> GetErrors();
+        void AddError(ShaderMessage error);
+        void AddErrors(IEnumerable<ShaderMessage> errors);
         void ClearErrors();
     }
 }
