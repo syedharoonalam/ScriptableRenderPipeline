@@ -121,45 +121,6 @@ namespace UnityEditor.ShaderGraph.UnitTests
             Assert.AreEqual(expected, result);
         }
 
-        [Test]
-        public void CanSetAndRetrieveErrors()
-        {
-            var expected = "TestError";
-            m_NodeA.AddError(new ShaderMessage(expected));
-            
-            Assert.IsTrue(m_NodeA.hasError);
-            Assert.IsTrue(m_NodeA.hasErrors);
-            Assert.AreEqual(1, m_NodeA.errorCount);
-            Assert.AreEqual(expected, m_NodeA.GetErrors().First().message);
-        }
-
-        [Test]
-        public void CanAddMultipleErrors()
-        {
-            var errors = new List<ShaderMessage>
-            {
-                new ShaderMessage("Err1"),
-                new ShaderMessage("Err2"),
-                new ShaderMessage("Err3")
-            };
-            m_NodeA.AddErrors(errors);
-            
-            Assert.IsTrue(m_NodeA.hasError);
-            Assert.IsTrue(m_NodeA.hasErrors);
-            Assert.AreEqual(3, m_NodeA.errorCount);
-        }
-
-        [Test]
-        public void CanClearErrors()
-        {
-            var expected = "TestError";
-            m_NodeA.AddError(new ShaderMessage(expected));
-            m_NodeA.ClearErrors();
-            
-            Assert.IsFalse(m_NodeA.hasError);
-            Assert.Zero(m_NodeA.errorCount);
-        }
-
         /*       [Test]
                public void NodeGenerateCorrectPreviewPropertyUsages()
                {

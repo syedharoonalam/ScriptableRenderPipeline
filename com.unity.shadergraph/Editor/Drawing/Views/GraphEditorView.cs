@@ -350,6 +350,25 @@ namespace UnityEditor.ShaderGraph.Drawing
                 node.UpdatePortInputVisibilities();
 
             UpdateEdgeColors(nodesToUpdate);
+
+            foreach (var messageData in previewManager.GetNodeMessageChanges())
+            {
+                var node = m_Graph.GetNodeFromTempId(messageData.Key);
+                if (node == null)
+                    continue;
+                var nodeView = m_GraphView.GetNodeByGuid(node.guid.ToString()) as MaterialNodeView;
+                if (nodeView == null)
+                    continue;
+                if (messageData.Value.Count == 0)
+                {
+                    nodeView.ClearError();
+                }
+                else
+                {
+                    nodeView.AttachError(messageData.Value.First().message);
+                }
+            }
+            previewManager.ClearNodeMessageChanges();
         }
 
         void AddNode(INode node)

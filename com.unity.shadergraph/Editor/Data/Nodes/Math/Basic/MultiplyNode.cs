@@ -279,7 +279,7 @@ namespace UnityEditor.ShaderGraph
             if (isInError)
             {
                 // TODO: Specify actual validation errors after cleaning up this validation code
-                AddError(new ShaderMessage("Error found during validation."));
+                //AddError(new ShaderMessage("Error found during validation."));
             }
             else
             {

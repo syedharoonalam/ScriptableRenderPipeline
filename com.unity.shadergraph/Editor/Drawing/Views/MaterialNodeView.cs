@@ -153,13 +153,6 @@ namespace UnityEditor.ShaderGraph.Drawing
                 }
             }
 
-            if (node.hasError)
-            {
-                // Maybe want to create some UI that can show multiple errors, for now just show first one
-                // since that's what GraphView offers.
-                AttachError(node.GetErrors().First().message);
-            }
-
             m_PortInputContainer.SendToBack();
 
             // Remove this after updated to the correct API call has landed in trunk. ------------
@@ -202,10 +195,21 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         public void AttachError(string errString)
         {
-            var wrongPipeline = IconBadge.CreateError(errString);
-            Add(wrongPipeline);
+            ClearError();
+            var badge = IconBadge.CreateError(errString);
+            Add(badge);
             var title = this.Q("title");
-            wrongPipeline.AttachTo(title, SpriteAlignment.LeftCenter);
+            badge.AttachTo(title, SpriteAlignment.RightCenter);
+        }
+
+        public void ClearError()
+        {
+            var badge = this.Q<IconBadge>();
+            if(badge != null)
+            {
+                badge.Detach();
+                badge.RemoveFromHierarchy();
+            }
         }
 
         void OnGeometryChanged(GeometryChangedEvent evt)

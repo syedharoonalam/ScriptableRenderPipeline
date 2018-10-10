@@ -143,35 +143,9 @@ namespace UnityEditor.ShaderGraph
             get { return true; }
         }
 
-        // This is from INode
         public virtual bool hasError
         {
             get { return m_Messages.Count > 0; }
-        }
-        
-        public int errorCount
-        {
-            get { return m_Messages.Count; }
-        }
-
-        public IEnumerable<ShaderMessage> GetErrors()
-        {
-            return m_Messages;
-        }
-
-        public void AddError(ShaderMessage error)
-        {
-            m_Messages.Add(error);
-        }
-
-        public void AddErrors(IEnumerable<ShaderMessage> errors)
-        {
-            m_Messages.AddRange(errors);
-        }
-
-        public void ClearErrors()
-        {
-            m_Messages.Clear();
         }
         
         string m_DefaultVariableName;
@@ -466,7 +440,7 @@ namespace UnityEditor.ShaderGraph
             if (isInError)
             {
                 // TODO: Specify actual validation errors after cleaning up this validation code
-                AddError(new ShaderMessage("Error found during validation."));
+                //AddError(new ShaderMessage("Error found during validation."));
             }
             else
             {
