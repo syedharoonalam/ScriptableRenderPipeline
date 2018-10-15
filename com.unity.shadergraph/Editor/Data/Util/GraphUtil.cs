@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using UnityEditor.Graphing;
 using UnityEditor.Graphing.Util;
 using UnityEditorInternal;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 using System.Reflection;
 using Object = System.Object;
@@ -84,6 +83,9 @@ namespace UnityEditor.ShaderGraph
             this.conditional = conditional;
         }
     }
+
+    // An easy alias for error handling
+    public class ShaderMessageList : Dictionary<Identifier, List<ShaderMessage>> {}
 
     public static class ShaderSpliceUtil
     {

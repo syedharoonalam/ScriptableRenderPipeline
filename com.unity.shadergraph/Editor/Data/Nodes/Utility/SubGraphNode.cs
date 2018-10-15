@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEngine;
 using UnityEditor.Graphing;
 
@@ -314,8 +313,18 @@ namespace UnityEditor.ShaderGraph
                 referencedGraph.OnEnable();
                 referencedGraph.ValidateGraph();
 
-                //foreach(var node in referencedGraph.GetNodes<AbstractMaterialNode>().Where(x => x.hasError))
-                    //AddErrors(node.GetErrors());
+                var errorCount = referencedGraph.GetNodes<AbstractMaterialNode>().Count(x => x.hasError);
+
+                if (errorCount > 0)
+                {
+                    var plural = "";
+                    if (errorCount > 1)
+                        plural = "s";
+                    ((AbstractMaterialGraph) owner).AddValidationErrors(new ShaderMessageList()
+                    {
+                        {tempId, new List<ShaderMessage>() {new ShaderMessage(string.Format("Sub Graph contains {0} node{1} with errors", errorCount, plural))}}
+                    });
+                }
             }
 
             ValidateShaderStage();

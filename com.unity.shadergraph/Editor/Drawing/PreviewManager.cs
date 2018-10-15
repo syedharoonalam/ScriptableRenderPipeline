@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,11 +10,6 @@ using Object = UnityEngine.Object;
 
 namespace UnityEditor.ShaderGraph.Drawing
 {
-    public class ShaderMessageList : Dictionary<Identifier, List<ShaderMessage>>
-    {
-        public static Type KVPType = typeof(KeyValuePair<Identifier, List<ShaderMessage>>);
-    }
-
     public class PreviewManager : IDisposable
     {
         AbstractMaterialGraph m_Graph;
@@ -462,6 +456,9 @@ namespace UnityEditor.ShaderGraph.Drawing
             message.AppendLine(@"Preview shader for graph has {0} error{1}:", messages.Length, messages.Length != 1 ? "s" : "");
             foreach (var error in messages)
             {
+                if (error.line == 0 && error.message == string.Empty)
+                    continue;
+                
                 var node = results.sourceMap.FindNode(error.line);
                 message.AppendLine("Shader compilation error in {3} at line {1} (on {2}):\n{0}",
                     error.message, error.line, error.platform,
@@ -480,7 +477,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             return message;
         }
 
-        void AddOrAppendError(Identifier nodeId, ShaderMessage error, ShaderMessageList errorChanges)
+        static void AddOrAppendError(Identifier nodeId, ShaderMessage error, ShaderMessageList errorChanges)
         {
             if (errorChanges.ContainsKey(nodeId))
             {
@@ -489,18 +486,6 @@ namespace UnityEditor.ShaderGraph.Drawing
             else
             {
                 errorChanges.Add(nodeId, new List<ShaderMessage>() {error});
-            }
-        }
-
-        void AddOrAppendErrors(Identifier nodeId, ShaderMessage[] errors, ShaderMessageList errorChanges)
-        {
-            if (errorChanges.ContainsKey(nodeId))
-            {
-                errorChanges[nodeId].AddRange(errors);
-            }
-            else
-            {
-                errorChanges.Add(nodeId, errors.ToList());
             }
         }
 
@@ -597,9 +582,12 @@ namespace UnityEditor.ShaderGraph.Drawing
             if (ShaderUtil.ShaderHasError(shaderData.shader))
             {
                 var messages = ShaderUtil.GetShaderMessages(shaderData.shader);
-                AddOrAppendErrors(nodeId, messages, errorChanges);
                 foreach (var message in messages)
-                    Debug.LogFormat("Compilation error in {3} at line {1} (on {2}):\n{0}", message.message, message.line, message.platform, "graph");
+                {
+                    Debug.LogFormat("Compilation error in {3} at line {1} (on {2}):\n{0}", message.message,
+                        message.line, message.platform, "graph");
+                }
+
                 shaderData.hasError = true;
                 if (debugOutputPath != null)
                 {
@@ -775,6 +763,18 @@ Shader ""hidden/preview""
 
         internal void ClearNodeMessageChanges()
         {
+            foreach (var change in m_MessageChanges)
+            {
+                if (change.Value.Count == 0)
+                {
+                    m_CurrentMessages.Remove(change.Key);
+                }
+                else
+                {
+                    m_CurrentMessages[change.Key] = change.Value;
+                }
+            }
+
             m_MessageChanges.Clear();
         }
     }

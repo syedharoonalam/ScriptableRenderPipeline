@@ -102,6 +102,16 @@ namespace UnityEditor.ShaderGraph
         {
             get { return m_PastedNodes; }
         }
+        
+        [NonSerialized]
+        ShaderMessageList m_ValidationMessages = new ShaderMessageList();
+        [NonSerialized]
+        protected ShaderMessageList m_ValidationChanges = new ShaderMessageList();
+
+        public IEnumerable<KeyValuePair<Identifier, List<ShaderMessage>>> validationChanges
+        {
+            get { return m_ValidationChanges; }
+        }
 
         #endregion
 
@@ -547,6 +557,21 @@ namespace UnityEditor.ShaderGraph
                     m_AddedEdges.Remove(edge);
                 }
             }
+        }
+
+        public void AddValidationErrors(ShaderMessageList validationErrors)
+        {
+            validationErrors.ToList().ForEach(kvp =>
+            {
+                if (m_ValidationChanges.ContainsKey(kvp.Key))
+                {
+                    m_ValidationChanges[kvp.Key].AddRange(kvp.Value);
+                }
+                else
+                {
+                    m_ValidationChanges.Add(kvp.Key, kvp.Value);
+                }
+            });
         }
 
         public void ReplaceWith(IGraph other)
