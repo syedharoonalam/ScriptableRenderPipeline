@@ -84,9 +84,6 @@ namespace UnityEditor.ShaderGraph
         }
     }
 
-    // An easy alias for error handling
-    public class ShaderMessageList : Dictionary<Identifier, List<ShaderMessage>> {}
-
     public static class ShaderSpliceUtil
     {
         enum BaseFieldType

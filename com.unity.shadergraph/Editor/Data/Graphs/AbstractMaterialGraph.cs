@@ -104,9 +104,9 @@ namespace UnityEditor.ShaderGraph
         }
         
         [NonSerialized]
-        ShaderMessageList m_ValidationMessages = new ShaderMessageList();
+        Dictionary<Identifier, List<ShaderMessage>> m_ValidationMessages = new Dictionary<Identifier, List<ShaderMessage>>();
         [NonSerialized]
-        protected ShaderMessageList m_ValidationChanges = new ShaderMessageList();
+        protected Dictionary<Identifier, List<ShaderMessage>> m_ValidationChanges = new Dictionary<Identifier, List<ShaderMessage>>();
 
         public IEnumerable<KeyValuePair<Identifier, List<ShaderMessage>>> validationChanges
         {
@@ -559,7 +559,7 @@ namespace UnityEditor.ShaderGraph
             }
         }
 
-        public void AddValidationErrors(ShaderMessageList validationErrors)
+        public void AddValidationErrors(Dictionary<Identifier, List<ShaderMessage>> validationErrors)
         {
             validationErrors.ToList().ForEach(kvp =>
             {

@@ -16,8 +16,8 @@ namespace UnityEditor.ShaderGraph.Drawing
         List<PreviewRenderData> m_RenderDatas = new List<PreviewRenderData>();
         PreviewRenderData m_MasterRenderData;
         List<Identifier> m_Identifiers = new List<Identifier>();
-        ShaderMessageList m_CurrentMessages = new ShaderMessageList();
-        ShaderMessageList m_MessageChanges = new ShaderMessageList();
+        Dictionary<Identifier, List<ShaderMessage>> m_CurrentMessages = new Dictionary<Identifier, List<ShaderMessage>>();
+        Dictionary<Identifier, List<ShaderMessage>> m_MessageChanges = new Dictionary<Identifier, List<ShaderMessage>>();
         
         IndexSet m_DirtyPreviews = new IndexSet();
         IndexSet m_DirtyShaders = new IndexSet();
@@ -192,7 +192,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
         }
 
-        void HandleShaderMessages(ShaderMessageList errorChanges)
+        void HandleShaderMessages(Dictionary<Identifier, List<ShaderMessage>> errorChanges)
         {
             m_MessageChanges.Clear();
 
@@ -368,7 +368,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             {
                 PropagateNodeSet(m_DirtyShaders);
 
-                var errorChanges = new ShaderMessageList();
+                var errorChanges = new Dictionary<Identifier, List<ShaderMessage>>();
                 var masterNodes = new List<INode>();
                 var colorNodes = new List<INode>();
                 var wireframeNodes = new List<INode>();
@@ -449,7 +449,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
         }
         
-        ShaderStringBuilder ProcessUberErrors(GenerationResults results, ShaderMessageList errorChanges)
+        ShaderStringBuilder ProcessUberErrors(GenerationResults results, Dictionary<Identifier, List<ShaderMessage>> errorChanges)
         {
             var messages = ShaderUtil.GetShaderMessages(m_ColorShader);
             var message = new ShaderStringBuilder();
@@ -477,7 +477,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             return message;
         }
 
-        static void AddOrAppendError(Identifier nodeId, ShaderMessage error, ShaderMessageList errorChanges)
+        static void AddOrAppendError(Identifier nodeId, ShaderMessage error, Dictionary<Identifier, List<ShaderMessage>> errorChanges)
         {
             if (errorChanges.ContainsKey(nodeId))
             {
@@ -489,7 +489,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
         }
 
-        void SetNoErrors(Identifier nodeId, ShaderMessageList errorChanges)
+        void SetNoErrors(Identifier nodeId, Dictionary<Identifier, List<ShaderMessage>> errorChanges)
         {
             if (!errorChanges.ContainsKey(nodeId))
             {
@@ -526,7 +526,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             renderData.texture = renderData.renderTexture;
         }
 
-        void UpdateShader(Identifier nodeId, ShaderMessageList errorChanges)
+        void UpdateShader(Identifier nodeId, Dictionary<Identifier, List<ShaderMessage>> errorChanges)
         {
             var node = m_Graph.GetNodeFromTempId(nodeId) as AbstractMaterialNode;
             if (node == null)
@@ -756,7 +756,7 @@ Shader ""hidden/preview""
             return value;
         }
 
-        internal ShaderMessageList GetNodeMessageChanges()
+        internal Dictionary<Identifier, List<ShaderMessage>> GetNodeMessageChanges()
         {
             return m_MessageChanges;
         }

@@ -278,7 +278,7 @@ namespace UnityEditor.ShaderGraph
 
             if (isInError)
             {
-                ((AbstractMaterialGraph) owner).AddValidationErrors(new ShaderMessageList()
+                ((AbstractMaterialGraph) owner).AddValidationErrors(new Dictionary<Identifier, List<ShaderMessage>>()
                 {
                     {tempId, new List<ShaderMessage>() {new ShaderMessage("Error found during node validation")}}
                 });

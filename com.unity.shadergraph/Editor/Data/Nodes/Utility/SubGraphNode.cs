@@ -320,7 +320,7 @@ namespace UnityEditor.ShaderGraph
                     var plural = "";
                     if (errorCount > 1)
                         plural = "s";
-                    ((AbstractMaterialGraph) owner).AddValidationErrors(new ShaderMessageList()
+                    ((AbstractMaterialGraph) owner).AddValidationErrors(new Dictionary<Identifier, List<ShaderMessage>>()
                     {
                         {tempId, new List<ShaderMessage>() {new ShaderMessage(string.Format("Sub Graph contains {0} node{1} with errors", errorCount, plural))}}
                     });
