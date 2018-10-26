@@ -87,6 +87,7 @@ ${VertexShaderOutputs}
     half4 ShadowPassFragment(VertexOutput IN) : SV_TARGET
     {
         UNITY_SETUP_INSTANCE_ID(IN);
+		UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
         // Pixel transformations performed by graph
 ${PixelShader}
@@ -176,6 +177,7 @@ ${VertexShaderOutputs}
     half4 frag(VertexOutput IN) : SV_TARGET
     {
         UNITY_SETUP_INSTANCE_ID(IN);
+		UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
 
         // Pixel transformations performed by graph
 ${PixelShader}

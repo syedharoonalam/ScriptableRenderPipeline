@@ -23,23 +23,20 @@ Shader "Hidden/Lightweight Render Pipeline/Blit"
             {
                 float4 positionOS   : POSITION;
                 float2 uv           : TEXCOORD0;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
             {
                 half4 positionCS       : SV_POSITION;
                 half2 uv        : TEXCOORD0;
-                UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            UNITY_DECLARE_SCREENSPACE_TEXTURE(_BlitTex);
+            TEXTURE2D(_BlitTex);
+            SAMPLER(sampler_BlitTex);
 
             Varyings Vertex(Attributes input)
             {
                 Varyings output;
-                UNITY_SETUP_INSTANCE_ID(input);
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 output.uv = input.uv;
                 return output;
@@ -47,8 +44,8 @@ Shader "Hidden/Lightweight Render Pipeline/Blit"
 
             half4 Fragment(Varyings input) : SV_Target
             {
-                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-				return half4(UNITY_SAMPLE_SCREENSPACE_TEXTURE(_BlitTex, input.uv));
+                half4 col = SAMPLE_TEXTURE2D(_BlitTex, sampler_BlitTex, input.uv);
+                return col;
             }
             ENDHLSL
         }
