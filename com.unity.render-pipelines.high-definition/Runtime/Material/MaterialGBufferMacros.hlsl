@@ -5,6 +5,9 @@
 // Define for GBuffer management. Can be optionally included after material HLSL headers
 //-----------------------------------------------------------------------------
 
+// Only one deferred layout is allowed for a HDRenderPipeline, this will be detect by the redefinition of GBUFFERMATERIAL_COUNT
+// If GBUFFERMATERIAL_COUNT is define two time, the shaders will not compile
+
 #ifdef GBUFFERMATERIAL_COUNT
 
 #if GBUFFERMATERIAL_COUNT == 2

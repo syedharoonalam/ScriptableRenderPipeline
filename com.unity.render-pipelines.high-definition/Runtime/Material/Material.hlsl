@@ -129,29 +129,6 @@ void UpdateLightingHierarchyWeights(inout float hierarchyWeight, inout float wei
 // BuiltinData
 //-----------------------------------------------------------------------------
 
-#include "Builtin/BuiltinData.hlsl"
-
-//-----------------------------------------------------------------------------
-// Material definition
-//-----------------------------------------------------------------------------
-
-// Here we include all the different lighting model supported by the renderloop based on define done in .shader
-// Only one deferred layout is allowed for a HDRenderPipeline, this will be detect by the redefinition of GBUFFERMATERIAL_COUNT
-// If GBUFFERMATERIAL_COUNT is define two time, the shaders will not compile
-#ifdef UNITY_MATERIAL_LIT
-#if HDRP_MATERIAL_TYPE_SIMPLE
-#include "Lit/SimpleLit.hlsl"
-#else
-#include "Lit/Lit.hlsl"
-#endif
-#elif defined(UNITY_MATERIAL_UNLIT)
-#include "Unlit/Unlit.hlsl"
-#elif defined(UNITY_MATERIAL_STACKLIT)
-#include "StackLit/StackLit.hlsl"
-#elif defined(UNITY_MATERIAL_FABRIC)
-#include "Fabric/Fabric.hlsl"
-#elif defined(UNITY_MATERIAL_AXF)
-#include "AxF/AxF.hlsl"
-#endif
+#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Builtin/BuiltinData.hlsl"
 
 #endif // UNITY_MATERIAL_INCLUDED
