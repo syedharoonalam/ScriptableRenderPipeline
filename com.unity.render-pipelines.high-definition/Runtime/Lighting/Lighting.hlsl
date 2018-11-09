@@ -24,6 +24,7 @@
 #endif
 
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl" // Depends on LightLoopDef and shadows
+#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialGBufferMacros.hlsl"
 
 // Volumetrics have their own light loop.
 #ifndef UNITY_MATERIAL_VOLUMETRIC
