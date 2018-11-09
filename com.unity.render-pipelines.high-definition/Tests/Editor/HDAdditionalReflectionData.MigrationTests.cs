@@ -97,7 +97,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     var influencePositionWS = legacyProbeData.capturePositionWS + legacyProbeData.influenceOffset;
                     // No custom proxy here, so proxyToWorld = influenceToWorld
                     var proxyToWorld = Matrix4x4.TRS(influencePositionWS, Quaternion.identity, Vector3.one);
-                    var capturePositionPS = (Vector3)(proxyToWorld.inverse * legacyProbeData.capturePositionWS);
+                    var capturePositionPS = (Vector3)proxyToWorld.inverse.MultiplyPoint(legacyProbeData.capturePositionWS);
 
                     var instance = Object.Instantiate(prefab);
 
@@ -429,7 +429,7 @@ MonoBehaviour:
                 {
                     var influencePositionWS = legacyProbeData.capturePositionWS + legacyProbeData.boxOffset;
                     var proxyToWorld = Matrix4x4.TRS(influencePositionWS, Quaternion.identity, Vector3.one);
-                    var capturePositionPS = (Vector3)(proxyToWorld.inverse * legacyProbeData.capturePositionWS);
+                    var capturePositionPS = (Vector3)proxyToWorld.inverse.MultiplyPoint(legacyProbeData.capturePositionWS);
 
                     var instance = Object.Instantiate(prefab);
 

@@ -41,7 +41,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 var mirrorPositionWS = p.transform.position;
                 var mirrorRotationWS = p.transform.rotation * Quaternion.FromToRotation(Vector3.up, Vector3.forward);
                 var worldToProxy = p.proxyToWorld.inverse;
-                var mirrorPositionPS = worldToProxy * mirrorPositionWS;
+                var mirrorPositionPS = worldToProxy.MultiplyPoint(mirrorPositionWS);
                 var mirrorRotationPS = worldToProxy.rotation * mirrorRotationWS;
                 p.m_ProbeSettings.proxySettings.mirrorPositionProxySpace = mirrorPositionPS;
                 p.m_ProbeSettings.proxySettings.mirrorRotationProxySpace = mirrorRotationPS;

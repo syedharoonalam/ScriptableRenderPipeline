@@ -90,7 +90,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     // set the transform position to the influence position world space
                     t.transform.position += t.influenceVolume.obsoleteOffset;
 
-                    var capturePositionPS = t.proxyToWorld.inverse * capturePositionWS;
+                    var capturePositionPS = t.proxyToWorld.inverse.MultiplyPoint(capturePositionWS);
                     t.m_ProbeSettings.proxySettings.capturePositionProxySpace = capturePositionPS;
 #pragma warning restore 618
                 })
