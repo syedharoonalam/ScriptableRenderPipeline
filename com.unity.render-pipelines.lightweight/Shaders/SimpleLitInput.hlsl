@@ -6,11 +6,11 @@
 
 CBUFFER_START(UnityPerMaterial)
 float4 _MainTex_ST;
-half4 _Color;
-half4 _SpecColor;
-half4 _EmissionColor;
-half _Cutoff;
-half _Shininess;
+float4 _Color;
+float4 _SpecColor;
+float4 _EmissionColor;
+float _Cutoff;
+float _Shininess;
 CBUFFER_END
 
 TEXTURE2D(_SpecGlossMap);       SAMPLER(sampler_SpecGlossMap);

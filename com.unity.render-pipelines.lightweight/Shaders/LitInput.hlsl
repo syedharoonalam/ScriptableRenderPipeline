@@ -7,15 +7,15 @@
 
 CBUFFER_START(UnityPerMaterial)
 float4 _MainTex_ST;
-half4 _Color;
-half4 _SpecColor;
-half4 _EmissionColor;
-half _Cutoff;
-half _Glossiness;
-half _GlossMapScale;
-half _Metallic;
-half _BumpScale;
-half _OcclusionStrength;
+float4 _Color;
+float4 _SpecColor;
+float4 _EmissionColor;
+float _Cutoff;
+float _Glossiness;
+float _GlossMapScale;
+float _Metallic;
+float _BumpScale;
+float _OcclusionStrength;
 CBUFFER_END
 
 TEXTURE2D(_OcclusionMap);       SAMPLER(sampler_OcclusionMap);
