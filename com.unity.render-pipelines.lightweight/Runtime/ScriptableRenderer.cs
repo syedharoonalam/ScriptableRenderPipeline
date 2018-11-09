@@ -300,8 +300,11 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             {
                 desc = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight);
             }
-            desc.colorFormat = cameraData.isHdrEnabled ? RenderTextureFormat.DefaultHDR :
-                RenderTextureFormat.Default;
+
+            bool useHDR10 = Application.isMobilePlatform &&
+             SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB2101010);
+            RenderTextureFormat hdrFormat = (useHDR10) ? RenderTextureFormat.ARGB2101010 : RenderTextureFormat.DefaultHDR;
+            desc.colorFormat = cameraData.isHdrEnabled ? hdrFormat : RenderTextureFormat.Default;
             desc.enableRandomWrite = false;
             desc.sRGB = true;
             desc.width = (int)((float)desc.width * renderScale * scaler);
