@@ -14,6 +14,7 @@ namespace UnityEngine.VFX.Utils
         [VFXParameterBinding("UnityEditor.VFX.Transform"), SerializeField]
         protected ExposedParameter m_Parameter = "Transform";
         public Transform Target;
+        public bool local = false;
 
         private ExposedParameter Position;
         private ExposedParameter Angles;
@@ -43,9 +44,18 @@ namespace UnityEngine.VFX.Utils
 
         public override void UpdateBinding(VisualEffect component)
         {
-            component.SetVector3((int)Position, Target.transform.position);
-            component.SetVector3((int)Angles, Target.transform.eulerAngles);
-            component.SetVector3((int)Scale, Target.transform.localScale);
+            if (local)
+            {
+                component.SetVector3((int)Position, Target.transform.localPosition);
+                component.SetVector3((int)Angles, Target.transform.localEulerAngles);
+                component.SetVector3((int)Scale, Target.transform.localScale);
+            }
+            else
+            {
+                component.SetVector3((int)Position, Target.transform.position);
+                component.SetVector3((int)Angles, Target.transform.eulerAngles);
+                component.SetVector3((int)Scale, Target.transform.localScale);
+            }
         }
 
         public override string ToString()
