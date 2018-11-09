@@ -33,13 +33,13 @@ namespace UnityEditor.ShaderGraph
         private DrawState m_DrawState;
 
         [NonSerialized]
+        bool m_HasError;
+        
+        [NonSerialized]
         private List<ISlot> m_Slots = new List<ISlot>();
 
         [SerializeField]
         List<SerializationHelper.JSONSerializedElement> m_SerializableSlots = new List<SerializationHelper.JSONSerializedElement>();
-
-        [NonSerialized]
-        List<ShaderMessage> m_Messages = new List<ShaderMessage>();
 
         public Identifier tempId { get; set; }
 
@@ -145,7 +145,8 @@ namespace UnityEditor.ShaderGraph
 
         public virtual bool hasError
         {
-            get { return m_Messages.Count > 0; }
+            get { return m_HasError; }
+            protected set { m_HasError = value; }
         }
         
         string m_DefaultVariableName;
@@ -299,9 +300,11 @@ namespace UnityEditor.ShaderGraph
             return ConcreteSlotValueType.Matrix2;
         }
 
+        protected const string k_validationErrorMessage = "Error found during node validation";
         public virtual void ValidateNode()
         {
             var isInError = false;
+            var errorMessage = k_validationErrorMessage;
 
             // all children nodes needs to be updated first
             // so do that here
@@ -316,12 +319,7 @@ namespace UnityEditor.ShaderGraph
                 {
                     var fromSocketRef = edge.outputSlot;
                     var outputNode = owner.GetNodeFromGuid(fromSocketRef.nodeGuid);
-                    if (outputNode == null)
-                        continue;
-
-                    outputNode.ValidateNode();
-                    if (outputNode.hasError)
-                        isInError = true;
+                    outputNode?.ValidateNode();
                 }
             }
             ListPool<MaterialSlot>.Release(slots);
@@ -367,7 +365,7 @@ namespace UnityEditor.ShaderGraph
                 var outputConcreteType = outputSlot.concreteValueType;
                 // dynamic input... depends on output from other node.
                 // we need to compare ALL dynamic inputs to make sure they
-                // are compatable.
+                // are compatible.
                 if (inputSlot is DynamicVectorMaterialSlot)
                 {
                     dynamicInputSlotsToCompare.Add((DynamicVectorMaterialSlot)inputSlot, outputConcreteType);
@@ -405,7 +403,7 @@ namespace UnityEditor.ShaderGraph
 
             // configure the output slots now
             // their slotType will either be the default output slotType
-            // or the above dynanic slotType for dynamic nodes
+            // or the above dynamic slotType for dynamic nodes
             // or error if there is an input error
             s_TempSlots.Clear();
             GetOutputSlots(s_TempSlots);
@@ -435,14 +433,12 @@ namespace UnityEditor.ShaderGraph
             s_TempSlots.Clear();
             GetOutputSlots(s_TempSlots);
             isInError |= s_TempSlots.Any(x => x.hasError);
-            isInError |= CalculateNodeHasError();
+            isInError |= CalculateNodeHasError(ref errorMessage);
+            hasError = isInError;
 
             if (isInError)
             {
-                ((AbstractMaterialGraph) owner).AddValidationErrors(new Dictionary<Identifier, List<ShaderMessage>>()
-                {
-                    {tempId, new List<ShaderMessage>() {new ShaderMessage("Error found during node validation")}}
-                });
+                ((AbstractMaterialGraph) owner).AddValidationError(tempId, errorMessage);
             }
             else
             {
@@ -459,7 +455,7 @@ namespace UnityEditor.ShaderGraph
         public int version { get; set; }
 
         //True if error
-        protected virtual bool CalculateNodeHasError()
+        protected virtual bool CalculateNodeHasError(ref string errorMessage)
         {
             return false;
         }

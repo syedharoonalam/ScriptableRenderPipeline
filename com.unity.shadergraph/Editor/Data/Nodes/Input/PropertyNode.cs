@@ -176,7 +176,7 @@ namespace UnityEditor.ShaderGraph
             return property.referenceName;
         }
 
-        protected override bool CalculateNodeHasError()
+        protected override bool CalculateNodeHasError(ref string errorMessage)
         {
             var graph = owner as AbstractMaterialGraph;
 

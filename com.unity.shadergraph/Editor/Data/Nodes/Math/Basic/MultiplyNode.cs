@@ -106,6 +106,7 @@ namespace UnityEditor.ShaderGraph
         public override void ValidateNode()
         {
             var isInError = false;
+            var errorMessage = k_validationErrorMessage;
 
             // all children nodes needs to be updated first
             // so do that here
@@ -124,8 +125,6 @@ namespace UnityEditor.ShaderGraph
                         continue;
 
                     outputNode.ValidateNode();
-                    if (outputNode.hasError)
-                        isInError = true;
                 }
             }
             ListPool<MaterialSlot>.Release(slots);
@@ -274,14 +273,12 @@ namespace UnityEditor.ShaderGraph
             s_TempSlots.Clear();
             GetOutputSlots(s_TempSlots);
             isInError |= s_TempSlots.Any(x => x.hasError);
-            isInError |= CalculateNodeHasError();
+            isInError |= CalculateNodeHasError(ref errorMessage);
+            hasError = isInError;
 
             if (isInError)
             {
-                ((AbstractMaterialGraph) owner).AddValidationErrors(new Dictionary<Identifier, List<ShaderMessage>>()
-                {
-                    {tempId, new List<ShaderMessage>() {new ShaderMessage("Error found during node validation")}}
-                });
+                ((AbstractMaterialGraph) owner).AddValidationError(tempId, errorMessage);
             }
             else
             {
@@ -292,7 +289,7 @@ namespace UnityEditor.ShaderGraph
             DictionaryPool<DynamicValueMaterialSlot, ConcreteSlotValueType>.Release(dynamicInputSlotsToCompare);
         }
 
-        protected override bool CalculateNodeHasError()
+        protected override bool CalculateNodeHasError(ref string errorMessage)
         {
             if (m_MultiplyType == MultiplyType.Matrix)
             {
@@ -305,20 +302,21 @@ namespace UnityEditor.ShaderGraph
                         inputNode.GetInputSlots(slots);
                         foreach (var s in slots)
                         {
+                            if (s is DynamicValueMaterialSlot) continue;
+
                             foreach (var inputEdge in inputNode.owner.GetEdges(s.slotReference))
                             {
-                                if (inputEdge == edge)
+                                if (inputEdge != edge)
+                                    continue;
+                                
+                                if (s.concreteValueType != ConcreteSlotValueType.Matrix4
+                                    && s.concreteValueType != ConcreteSlotValueType.Matrix3
+                                    && s.concreteValueType != ConcreteSlotValueType.Matrix2)
                                 {
-                                    if (s as DynamicValueMaterialSlot == null)
-                                    {
-                                        if (s.concreteValueType != ConcreteSlotValueType.Matrix4
-                                            && s.concreteValueType != ConcreteSlotValueType.Matrix3
-                                            && s.concreteValueType != ConcreteSlotValueType.Matrix2)
-                                        {
-                                            Debug.Log("ERROR: slot " + s.displayName + " cannot accept a Matrix type input");
-                                            return true;
-                                        }
-                                    }
+                                    errorMessage = "ERROR: slot " + s.displayName +
+                                                   " cannot accept a Matrix type input"; 
+                                    Debug.Log(errorMessage);
+                                    return true;
                                 }
                             }
                         }

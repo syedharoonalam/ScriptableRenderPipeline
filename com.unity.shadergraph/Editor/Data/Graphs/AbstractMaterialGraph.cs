@@ -103,16 +103,6 @@ namespace UnityEditor.ShaderGraph
             get { return m_PastedNodes; }
         }
         
-        [NonSerialized]
-        Dictionary<Identifier, List<ShaderMessage>> m_ValidationMessages = new Dictionary<Identifier, List<ShaderMessage>>();
-        [NonSerialized]
-        protected Dictionary<Identifier, List<ShaderMessage>> m_ValidationChanges = new Dictionary<Identifier, List<ShaderMessage>>();
-
-        public IEnumerable<KeyValuePair<Identifier, List<ShaderMessage>>> validationChanges
-        {
-            get { return m_ValidationChanges; }
-        }
-
         #endregion
 
         #region Edge data
@@ -173,6 +163,8 @@ namespace UnityEditor.ShaderGraph
                     owner.RegisterCompleteObjectUndo("Change Path");
             }
         }
+
+        public MessageManager messageManager { get; set; }
 
         public void ClearChanges()
         {
@@ -237,6 +229,7 @@ namespace UnityEditor.ShaderGraph
             m_Nodes[materialNode.tempId.index] = null;
             m_FreeNodeTempIds.Push(materialNode.tempId);
             m_NodeDictionary.Remove(materialNode.guid);
+            messageManager?.RemoveNode(materialNode.tempId);
             m_RemovedNodes.Add(materialNode);
         }
 
@@ -517,6 +510,7 @@ namespace UnityEditor.ShaderGraph
             foreach (var pNode in propertyNodes)
                 ReplacePropertyNodeWithConcreteNodeNoValidate(pNode);
 
+            messageManager?.ClearAllFromProvider(this);
             //First validate edges, remove any
             //orphans. This can happen if a user
             //manually modifies serialized data
@@ -559,21 +553,11 @@ namespace UnityEditor.ShaderGraph
             }
         }
 
-        public void AddValidationErrors(Dictionary<Identifier, List<ShaderMessage>> validationErrors)
+        public void AddValidationError(Identifier id, string errorMessage)
         {
-            validationErrors.ToList().ForEach(kvp =>
-            {
-                if (m_ValidationChanges.ContainsKey(kvp.Key))
-                {
-                    m_ValidationChanges[kvp.Key].AddRange(kvp.Value);
-                }
-                else
-                {
-                    m_ValidationChanges.Add(kvp.Key, kvp.Value);
-                }
-            });
+            messageManager?.AddOrAppendError(this, id, new ShaderMessage(errorMessage));;
         }
-
+        
         public void ReplaceWith(IGraph other)
         {
             var otherMg = other as AbstractMaterialGraph;
