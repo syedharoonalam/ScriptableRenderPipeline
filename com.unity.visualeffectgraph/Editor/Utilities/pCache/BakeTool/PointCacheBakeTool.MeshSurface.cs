@@ -29,13 +29,12 @@ namespace UnityEditor.VFX.Utils
         bool m_ExportColors = false;
         bool m_UniformPrepass = true;
 
-        Mesh m_Mesh;
         int m_OutputPointCount = 4096;
         int m_SeedMesh;
 
-        void OnGUI_Mesh()
+        void OnGUI_MeshSurface()
         {
-            GUILayout.Label("Mesh Baking", EditorStyles.boldLabel);
+            GUILayout.Label("Mesh Surface Baking", EditorStyles.boldLabel);
             m_Mesh = (Mesh)EditorGUILayout.ObjectField(Contents.mesh, m_Mesh, typeof(Mesh), false);
             m_Distribution = (Distribution)EditorGUILayout.EnumPopup(Contents.distribution, m_Distribution);
             if (m_Distribution != Distribution.RandomUniformArea)
@@ -60,11 +59,11 @@ namespace UnityEditor.VFX.Utils
                     {
                         try
                         {
-                            EditorUtility.DisplayProgressBar("pCache bake tool", "Capturing data...", 0.0f);
-                            var file = ComputePCacheFromMesh();
+                            EditorUtility.DisplayProgressBar(m_ProgressBar_Title, m_ProgressBar_CapturingData, 0.0f);
+                            var file = ComputePCacheFromMeshSurface();
                             if (file != null)
                             {
-                                EditorUtility.DisplayProgressBar("pCache bake tool", "Saving pCache file", 1.0f);
+                                EditorUtility.DisplayProgressBar(m_ProgressBar_Title, m_ProgressBar_SaveFile, 1.0f);
                                 file.SaveToFile(fileName, m_OutputFormat);
                                 AssetDatabase.ImportAsset(fileName, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
                             }
@@ -375,7 +374,7 @@ namespace UnityEditor.VFX.Utils
             }
         }
 
-        PCache ComputePCacheFromMesh()
+        PCache ComputePCacheFromMeshSurface()
         {
             var meshCache = ComputeDataCache(m_Mesh);
 
@@ -418,7 +417,7 @@ namespace UnityEditor.VFX.Utils
             {
                 if (i % 64 == 0)
                 {
-                    var cancel = EditorUtility.DisplayCancelableProgressBar("pCache bake tool", string.Format("Sampling data... {0}/{1}", i, m_OutputPointCount), (float)i / (float)m_OutputPointCount);
+                    var cancel = EditorUtility.DisplayCancelableProgressBar(m_ProgressBar_Title, string.Format("Sampling data... {0}/{1}", i, m_OutputPointCount), (float)i / (float)m_OutputPointCount);
                     if (cancel)
                     {
                         return null;
@@ -438,7 +437,7 @@ namespace UnityEditor.VFX.Utils
             if (m_ExportColors) file.AddColorProperty("color");
             if (m_ExportUV) file.AddVector4Property("uv");
 
-            EditorUtility.DisplayProgressBar("pCache bake tool", "Generating pCache...", 0.0f);
+            EditorUtility.DisplayProgressBar(m_ProgressBar_Title, "Generating pCache...", 0.0f);
             file.SetVector3Data("position", positions);
             if (m_ExportNormals) file.SetVector3Data("normal", normals);
             if (m_ExportColors) file.SetColorData("color", colors);
