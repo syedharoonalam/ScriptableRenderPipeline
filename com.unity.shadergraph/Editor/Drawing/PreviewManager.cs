@@ -354,7 +354,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         bool GenerateUberShader(ICollection<INode> errNodes, out GenerationResults results)
         {
-            m_UberShader.ClearCachedData();
+            ShaderUtil.ClearCachedData(m_UberShader);
             results = m_Graph.GetUberColorShader(errNodes);
             m_OutputIdName = results.outputIdProperty.referenceName;
             ShaderUtil.UpdateShaderAsset(m_UberShader, results.shader);
@@ -458,7 +458,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
             else
             {
-                shaderData.shader.ClearCachedData();
+                ShaderUtil.ClearCachedData(shaderData.shader);
                 ShaderUtil.UpdateShaderAsset(shaderData.shader, shaderData.shaderString);
             }
 
