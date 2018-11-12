@@ -70,7 +70,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         )
         {
             if (!AreAllOpenedSceneSaved())
+            {
+                handle.SetIsDone(true);
                 return;
+            }
 
             var hdPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
             if (hdPipeline == null)
@@ -341,6 +344,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 var scene = SceneManager.GetSceneAt(sceneI);
                 var sceneFolder = HDBakingUtilities.GetBakedTextureDirectory(scene);
+                if (!Directory.Exists(sceneFolder))
+                    continue;
 
                 var types = TypeInfo.GetEnumValues<ProbeSettings.ProbeType>();
                 for (int typeI = 0; typeI < types.Length; ++typeI)

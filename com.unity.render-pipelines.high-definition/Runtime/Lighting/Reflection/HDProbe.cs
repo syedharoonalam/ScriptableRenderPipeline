@@ -136,14 +136,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             get => m_ProbeSettings.influence ?? (m_ProbeSettings.influence = new InfluenceVolume());
             private set => m_ProbeSettings.influence = value;
         }
-        internal Matrix4x4 influenceToWorld => influenceVolume.GetInfluenceToWorld(transform);
+        internal Matrix4x4 influenceToWorld => Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
 
         // Camera
         /// <summary>Frame settings in use with this probe.</summary>
         public FrameSettings frameSettings => m_ProbeSettings.camera.frameSettings;
         internal Vector3 influenceExtents => influenceVolume.extents;
         internal Matrix4x4 proxyToWorld
-            => proxyVolume != null ? proxyVolume.transform.localToWorldMatrix : influenceToWorld;
+            => proxyVolume != null
+            ? Matrix4x4.TRS(proxyVolume.transform.position, proxyVolume.transform.rotation, Vector3.one)
+            : influenceToWorld;
         public Vector3 proxyExtents
             => proxyVolume != null ? proxyVolume.proxyVolume.extents : influenceExtents;
 

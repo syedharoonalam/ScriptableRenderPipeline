@@ -34,8 +34,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public override void OnInspectorGUI()
         {
             m_SerializedHDProbe.Update();
+            EditorGUI.BeginChangeCheck();
             Draw(m_UIState, m_SerializedHDProbe, this);
-            m_SerializedHDProbe.Apply();
+            if (EditorGUI.EndChangeCheck())
+                m_SerializedHDProbe.Apply();
         }
 
         protected virtual void OnEnable()

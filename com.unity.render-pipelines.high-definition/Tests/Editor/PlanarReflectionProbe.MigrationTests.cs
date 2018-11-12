@@ -108,7 +108,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
 
                     // No custom proxy here, so proxyToWorld = influenceToWorld
                     var proxyToWorld = Matrix4x4.TRS(influencePositionWS, influenceRotationWS, Vector3.one);
-                    var mirrorPositionPS = (Vector3)(proxyToWorld.inverse * legacyProbeData.mirrorPositionWS);
+                    var mirrorPositionPS = (Vector3)proxyToWorld.inverse.MultiplyPoint(legacyProbeData.mirrorPositionWS);
 
                     var instance = Object.Instantiate(prefab);
 
