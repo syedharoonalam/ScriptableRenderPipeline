@@ -3,7 +3,7 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
-    abstract partial class HDProbeUI : IUpdateable<SerializedHDProbe>
+    partial class HDProbeUI : IUpdateable<SerializedHDProbe>
     {
         [Flags]
         public enum Flag

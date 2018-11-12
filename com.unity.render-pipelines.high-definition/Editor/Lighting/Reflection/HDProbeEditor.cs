@@ -14,9 +14,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         HDProbe GetTarget(Object editorTarget);
     }
 
-    abstract class HDProbeEditor<TProvider, TUI, TSerialized> : Editor, IHDProbeEditor
+    abstract class HDProbeEditor<TProvider, TSerialized> : Editor, IHDProbeEditor
         where TProvider : struct, HDProbeUI.IProbeUISettingsProvider, InfluenceVolumeUI.IInfluenceUISettingsProvider
-        where TUI : HDProbeUI, new()
         where TSerialized : SerializedHDProbe
     {
         static Dictionary<Component, Editor> s_Editors = new Dictionary<Component, Editor>();
@@ -28,8 +27,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         HDProbe IHDProbeEditor.GetTarget(Object editorTarget) => GetTarget(editorTarget);
 
         TSerialized m_SerializedHDProbe;
-        protected TUI m_UIState;
-        protected TUI[] m_UIHandleState;
+        protected HDProbeUI m_UIState;
+        protected HDProbeUI[] m_UIHandleState;
         protected HDProbe[] m_TypedTargets;
 
         public override void OnInspectorGUI()
@@ -42,14 +41,14 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         protected virtual void OnEnable()
         {
             m_SerializedHDProbe = NewSerializedObject(serializedObject);
-            m_UIState = new TUI();
+            m_UIState = new HDProbeUI();
 
             m_TypedTargets = new HDProbe[targets.Length];
-            m_UIHandleState = new TUI[m_TypedTargets.Length];
+            m_UIHandleState = new HDProbeUI[m_TypedTargets.Length];
             for (var i = 0; i < m_TypedTargets.Length; i++)
             {
                 m_TypedTargets[i] = GetTarget(targets[i]);
-                m_UIHandleState[i] = new TUI();
+                m_UIHandleState[i] = new HDProbeUI();
             }
 
             foreach (var target in serializedObject.targetObjects)
@@ -66,7 +65,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 
         }
 
-        protected virtual void Draw(TUI s, TSerialized p, Editor o)
+        protected virtual void Draw(HDProbeUI s, TSerialized p, Editor o)
         {
             HDProbeUI.Drawer<TProvider>.DrawToolbars(s, p, o);
             HDProbeUI.Drawer<TProvider>.DrawPrimarySettings(s, p, o);
@@ -92,11 +91,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             HDProbeUI.Drawer<TProvider>.DrawBakeButton(s, p, o);
         }
 
-        protected virtual void DrawHandles(TUI s, TSerialized d, Editor o) { }
-        protected virtual void DrawAdditionalCaptureSettings(TUI s, TSerialized d, Editor o) { }
+        protected virtual void DrawHandles(HDProbeUI s, TSerialized d, Editor o) { }
+        protected virtual void DrawAdditionalCaptureSettings(HDProbeUI s, TSerialized d, Editor o) { }
 
         // TODO: generalize this
-        static bool DrawAndSetSectionFoldout(TUI s, HDProbeUI.Flag flag, string title)
+        static bool DrawAndSetSectionFoldout(HDProbeUI s, HDProbeUI.Flag flag, string title)
             => s.SetFlag(flag, HDEditorUtils.DrawSectionFoldout(title, s.HasFlag(flag)));
 
         protected void OnSceneGUI()
