@@ -250,31 +250,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 debugViewMaterialGBufferValues = debugViewMaterialGBufferValuesList.ToArray();
 
                 isDebugViewMaterialInit = true;
-
-                //raise warning if indexes collide
-                unsafe
-                {
-                    if(CoreUnsafeUtils.HaveDuplicates(debugViewMaterialValues))
-                    {
-                        Debug.LogError("DebugMenu: debugViewMaterialValues have duplicate values. This will broke the runtime UI.");
-                    }
-                    if (CoreUnsafeUtils.HaveDuplicates(debugViewEngineValues))
-                    {
-                        Debug.LogError("DebugMenu: debugViewEngineValues have duplicate values. This will broke the runtime UI.");
-                    }
-                    if (CoreUnsafeUtils.HaveDuplicates(debugViewMaterialVaryingValues))
-                    {
-                        Debug.LogError("DebugMenu: debugViewMaterialVaryingValues have duplicate values. This will broke the runtime UI.");
-                    }
-                    if (CoreUnsafeUtils.HaveDuplicates(debugViewMaterialPropertiesValues))
-                    {
-                        Debug.LogError("DebugMenu: debugViewMaterialPropertiesValues have duplicate values. This will broke the runtime UI.");
-                    }
-                    if (CoreUnsafeUtils.HaveDuplicates(debugViewMaterialGBufferValues))
-                    {
-                        Debug.LogError("DebugMenu: debugViewMaterialGBufferValues have duplicate values. This will broke the runtime UI.");
-                    }
-                }
             }
         }
 
