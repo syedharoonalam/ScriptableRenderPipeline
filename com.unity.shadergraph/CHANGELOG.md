@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - You can now show and hide the Main Preview and the Blackboard from the toolbar.
 
 ### Changed
+- The Shader Graph package is no longer in preview
 - Moved `NormalBlendRNM` node to a dropdown option on `Normal Blend` node.
 - `Sample Cubemap` node now has a `SamplerState` slot.
 - New Sub Graph assets now default to the "Sub Graphs" path in the Create Node menu.
