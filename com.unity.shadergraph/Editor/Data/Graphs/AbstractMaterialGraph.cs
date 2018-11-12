@@ -321,7 +321,10 @@ namespace UnityEditor.ShaderGraph
             }
             m_NodeDictionary.Add(materialNode.guid, materialNode);
             m_AddedNodes.Add(materialNode);
-            m_GroupNodes[materialNode.groupGuid].Add(materialNode);
+            if (m_GroupNodes.Any())
+            {
+                m_GroupNodes[materialNode.groupGuid].Add(materialNode);
+            }
         }
 
         public void RemoveNode(INode node)
