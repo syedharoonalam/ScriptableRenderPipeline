@@ -20,6 +20,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         public LightData lightData;
         public ShadowData shadowData;
         public bool supportsDynamicBatching;
+        public bool killAlphaInFinalBlit;
     }
 
     public struct LightData
