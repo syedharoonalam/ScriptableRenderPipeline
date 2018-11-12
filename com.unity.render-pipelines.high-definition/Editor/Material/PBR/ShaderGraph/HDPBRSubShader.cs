@@ -24,8 +24,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 "// Stencil setup for gbuffer",
                 "Stencil",
                 "{",
-                "   WriteMask 7",       // [_StencilWriteMask]    // default: StencilMask.Lighting  (fixed at compile time)
-                "   Ref  2",            // [_StencilRef]          // default: StencilLightingUsage.RegularLighting  (fixed at compile time)
+                "   WriteMask " +  ((int)HDRenderPipeline.StencilBitMask.LightingMask).ToString(),       // [_StencilWriteMask]    // default: StencilMask.Lighting
+                "   Ref  "      + ((int)StencilLightingUsage.RegularLighting).ToString(),                // [_StencilRef]          // default: StencilLightingUsage.RegularLighting 
                 "   Comp Always",
                 "   Pass Replace",
                 "}"
@@ -297,8 +297,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 "// Stencil setup for forward",
                 "Stencil",
                 "{",
-                "   WriteMask 7",       // [_StencilWriteMask]    // default: StencilMask.Lighting  (fixed at compile time)
-                "   Ref  2",            // [_StencilRef]          // default: StencilLightingUsage.RegularLighting  (fixed at compile time)
+                "   WriteMask " +  ((int)HDRenderPipeline.StencilBitMask.LightingMask).ToString(),       // [_StencilWriteMask]    // default: StencilMask.Lighting
+                "   Ref  "      + ((int)StencilLightingUsage.RegularLighting).ToString(),                // [_StencilRef]          // default: StencilLightingUsage.RegularLighting 
                 "   Comp Always",
                 "   Pass Replace",
                 "}"
