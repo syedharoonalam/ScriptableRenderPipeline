@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 
 namespace UnityEditor.Experimental.Rendering.Tests
@@ -27,7 +28,7 @@ namespace UnityEditor.Experimental.Rendering.Tests
             public override int GetHashCode()
             {
                 fixed (float* fptr = &floatValue)
-                    return intValue ^ *(int*)fptr;
+                return intValue ^ *(int*)fptr;
             }
         }
 
@@ -97,8 +98,44 @@ namespace UnityEditor.Experimental.Rendering.Tests
 
             CoreUnsafeUtils.QuickSort<int>(values.Length, ptrValues);
 
-            for (int i = 0; i < values.Length - 1; ++i)
+            for (int i = 0; i< values.Length - 1; ++i)
                 Assert.LessOrEqual(ptrValues[i], ptrValues[i + 1]);
+        }
+
+        static object[][] s_QuickSortHash = new object[][]
+        {
+            new object[]
+            {
+                new Hash128[] { Hash128.Parse("78b27b84a9011b5403e836b9dfa51e33"), Hash128.Parse("c7417d322c083197631326bccf3f9ea0"), Hash128.Parse("dd27f0dc4ffe20b0f8ecc0e4fdf618fe") },
+                new Hash128[] { Hash128.Parse("dd27f0dc4ffe20b0f8ecc0e4fdf618fe"), Hash128.Parse("c7417d322c083197631326bccf3f9ea0"), Hash128.Parse("78b27b84a9011b5403e836b9dfa51e33") },
+            },
+        };
+
+        [Test]
+        [TestCaseSource("s_QuickSortHash")]
+        public void QuickSortHash(Hash128[] l, Hash128[] r)
+        {
+            var lPtr = stackalloc Hash128[l.Length];
+            var rPtr = stackalloc Hash128[r.Length];
+            for (int i = 0; i < l.Length; ++i)
+            {
+                lPtr[i] = l[i];
+                rPtr[i] = r[i];
+            }
+
+            CoreUnsafeUtils.QuickSort<Hash128>(l.Length, lPtr);
+            CoreUnsafeUtils.QuickSort<Hash128>(r.Length, rPtr);
+
+            for (int i = 0; i < l.Length - 1; ++i)
+            {
+                Assert.LessOrEqual(lPtr[i], lPtr[i + 1]);
+                Assert.LessOrEqual(rPtr[i], rPtr[i + 1]);
+            }
+
+            for (int i = 0; i < l.Length; ++i)
+            {
+                Assert.AreEqual(lPtr[i], rPtr[i]);
+            }
         }
     }
 }

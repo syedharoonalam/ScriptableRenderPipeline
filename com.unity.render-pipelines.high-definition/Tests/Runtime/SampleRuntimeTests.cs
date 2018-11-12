@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 #endif
 
-class SampleRuntimeTests : IPrebuildSetup
+class SampleRuntimeTests
 {
     const float k_Epsilon = 1e-4f;
 

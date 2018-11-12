@@ -8,7 +8,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
     [CustomEditorForRenderPipeline(typeof(ReflectionProbe), typeof(HDRenderPipelineAsset))]
     [CanEditMultipleObjects]
-    sealed partial class HDReflectionProbeEditor : HDProbeEditor<HDProbeSettingsProvider, HDReflectionProbeUI, SerializedHDReflectionProbe>
+    sealed partial class HDReflectionProbeEditor : HDProbeEditor<HDProbeSettingsProvider, SerializedHDReflectionProbe>
     {
         #region Context Menu
         [MenuItem("CONTEXT/ReflectionProbe/Remove Component", false, 0)]

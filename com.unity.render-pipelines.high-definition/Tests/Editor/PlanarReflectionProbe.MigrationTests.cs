@@ -23,7 +23,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                 public int renderingPath;
                 public float shadowDistance;
                 public Vector3 mirrorPositionWS;
+                public Quaternion mirrorRotationWS;
                 public int captureSettingsOverride;
+                public float influenceYOffset;
             }
 
             static object[] s_LegacyProbeDatas =
@@ -43,7 +45,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     orthographicSize = 4,
                     renderingPath = (int)HDAdditionalCameraData.RenderingPath.UseGraphicsSettings,
                     shadowDistance = 151,
-                    mirrorPositionWS = new Vector3(3, 5.24f, 64.2f)
+                    mirrorPositionWS = new Vector3(3, 5.24f, 64.2f),
+                    mirrorRotationWS = Quaternion.Euler(15.3f, 93.3f, 243.34f),
+                    influenceYOffset = 0.34f
                 },
                 new LegacyProbeData
                 {
@@ -60,7 +64,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     orthographicSize = 4,
                     renderingPath = (int)HDAdditionalCameraData.RenderingPath.FullscreenPassthrough,
                     shadowDistance = 151,
-                    mirrorPositionWS = new Vector3(3, 5.24f, 64.2f)
+                    mirrorPositionWS = new Vector3(3, 5.24f, 64.2f),
+                    mirrorRotationWS = Quaternion.Euler(165.3f, 21.678f, 345.214f),
+                    influenceYOffset = 15.2f
                 },
                 new LegacyProbeData
                 {
@@ -77,7 +83,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     orthographicSize = 4,
                     renderingPath = (int)HDAdditionalCameraData.RenderingPath.Custom,
                     shadowDistance = 151,
-                    mirrorPositionWS = new Vector3(3, 5.24f, 64.2f)
+                    mirrorPositionWS = new Vector3(3, 5.24f, 64.2f),
+                    mirrorRotationWS = Quaternion.Euler(84.134f, 352.4f, 167.36f),
+                    influenceYOffset = 2.4f
                 },
             };
 
@@ -90,9 +98,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     out GameObject prefab
                 ))
                 {
-                    var influencePositionWS = legacyProbeData.mirrorPositionWS;
+                    var mat = Matrix4x4.TRS(
+                        legacyProbeData.mirrorPositionWS,
+                        legacyProbeData.mirrorRotationWS,
+                        Vector3.one
+                    );
+                    var influencePositionWS = mat.MultiplyPoint(Vector3.up * legacyProbeData.influenceYOffset);
+                    var influenceRotationWS = mat.rotation;
+
                     // No custom proxy here, so proxyToWorld = influenceToWorld
-                    var proxyToWorld = Matrix4x4.TRS(influencePositionWS, Quaternion.identity, Vector3.one);
+                    var proxyToWorld = Matrix4x4.TRS(influencePositionWS, influenceRotationWS, Vector3.one);
                     var mirrorPositionPS = (Vector3)(proxyToWorld.inverse * legacyProbeData.mirrorPositionWS);
 
                     var instance = Object.Instantiate(prefab);
@@ -145,7 +160,7 @@ Transform:
   m_PrefabInstance: {{fileID: 0}}
   m_PrefabAsset: {{fileID: 0}}
   m_GameObject: {{fileID: 6171638715142251291}}
-  m_LocalRotation: {{x: 0, y: 0, z: 0, w: 1}}
+  m_LocalRotation: {legacyProbeData.mirrorRotationWS.ToYAML()}
   m_LocalPosition: {legacyProbeData.mirrorPositionWS.ToYAML()}
   m_LocalScale: {{x: 1, y: 1, z: 1}}
   m_Children: []
@@ -168,7 +183,7 @@ MonoBehaviour:
   m_InfiniteProjection: 1
   m_InfluenceVolume:
     m_Shape: 1
-    m_Offset: {{x: 0, y: 5, z: 0}}
+    m_Offset: {{x: 0, y: {legacyProbeData.influenceYOffset}, z: 0}}
     m_BoxSize: {{x: 7, y: 8, z: 9}}
     m_BoxBlendDistancePositive: {{x: 0.1, y: 0.2, z: 0.3}}
     m_BoxBlendDistanceNegative: {{x: 0.4, y: 0.5, z: 0.6}}

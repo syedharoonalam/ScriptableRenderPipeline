@@ -39,6 +39,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 // Now, the mirror is defined in proxy space and faces the Z axis.
 
                 var mirrorPositionWS = p.transform.position;
+                // set the transform position to the influence position world space
+#pragma warning disable 618
+                var mat = Matrix4x4.TRS(p.transform.position, p.transform.rotation, Vector3.one);
+                p.transform.position = mat.MultiplyPoint(p.influenceVolume.obsoleteOffset);
+#pragma warning restore 618
                 var mirrorRotationWS = p.transform.rotation * Quaternion.FromToRotation(Vector3.up, Vector3.forward);
                 var worldToProxy = p.proxyToWorld.inverse;
                 var mirrorPositionPS = worldToProxy * mirrorPositionWS;

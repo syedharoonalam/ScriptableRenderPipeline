@@ -24,6 +24,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                 public int renderingPath;
                 public float shadowDistance;
                 public Vector3 capturePositionWS;
+                public Quaternion captureRotationWS;
                 public Vector3 influenceOffset;
             }
 
@@ -45,6 +46,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     renderingPath = (int)HDAdditionalCameraData.RenderingPath.UseGraphicsSettings,
                     shadowDistance = 151,
                     capturePositionWS = new Vector3(3, 5.24f, 64.2f),
+                    captureRotationWS = Quaternion.Euler(62.34f, 185.53f, 323.563f),
                     influenceOffset = new Vector3(3, -3.23f, 7.34f)
                 },
                 new LegacyProbeData
@@ -63,6 +65,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     renderingPath = (int)HDAdditionalCameraData.RenderingPath.FullscreenPassthrough,
                     shadowDistance = 151,
                     capturePositionWS = new Vector3(3, 5.24f, 64.2f),
+                    captureRotationWS = Quaternion.Euler(135.34f, 24.683f, 176.323f),
                     influenceOffset = new Vector3(3, -3.23f, 7.34f)
                 },
                 new LegacyProbeData
@@ -81,6 +84,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     renderingPath = (int)HDAdditionalCameraData.RenderingPath.Custom,
                     shadowDistance = 151,
                     capturePositionWS = new Vector3(3, 5.24f, 64.2f),
+                    captureRotationWS = Quaternion.Euler(341.35f, 165.2f, 12.25f),
                     influenceOffset = new Vector3(3, -3.23f, 7.34f)
                 },
             };
@@ -94,9 +98,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     out GameObject prefab
                 ))
                 {
-                    var influencePositionWS = legacyProbeData.capturePositionWS + legacyProbeData.influenceOffset;
+                    var mat = Matrix4x4.TRS(
+                        legacyProbeData.capturePositionWS,
+                        legacyProbeData.captureRotationWS,
+                        Vector3.one
+                    );
+                    var influencePositionWS = mat.MultiplyPoint(legacyProbeData.influenceOffset);
+                    var influenceRotationWS = mat.rotation;
+
                     // No custom proxy here, so proxyToWorld = influenceToWorld
-                    var proxyToWorld = Matrix4x4.TRS(influencePositionWS, Quaternion.identity, Vector3.one);
+                    var proxyToWorld = Matrix4x4.TRS(influencePositionWS, influenceRotationWS, Vector3.one);
                     var capturePositionPS = (Vector3)(proxyToWorld.inverse * legacyProbeData.capturePositionWS);
 
                     var instance = Object.Instantiate(prefab);
@@ -152,7 +163,7 @@ Transform:
   m_PrefabInstance: {{fileID: 0}}
   m_PrefabAsset: {{fileID: 0}}
   m_GameObject: {{fileID: 3102262843427888416}}
-  m_LocalRotation: {{x: 0, y: 0, z: 0, w: 1}}
+  m_LocalRotation: {legacyProbeData.captureRotationWS.ToYAML()}
   m_LocalPosition: {legacyProbeData.capturePositionWS.ToYAML()}
   m_LocalScale: {{x: 1, y: 1, z: 1}}
   m_Children: []
@@ -332,6 +343,7 @@ MonoBehaviour:
             {
                 public Vector3 boxOffset;
                 public Vector3 capturePositionWS;
+                public Quaternion captureRotationWS;
                 public Vector3 boxSize;
                 public float blendDistance;
                 public float importance;
@@ -355,6 +367,7 @@ MonoBehaviour:
                     boxProjection = true,
                     boxSize = new Vector3(1, 2, 3),
                     capturePositionWS = new Vector3(2, 3.5f, 6),
+                    captureRotationWS = Quaternion.Euler(341.35f, 165.2f, 12.25f),
                     cullingMask = 308,
                     farClipPlane = 850,
                     nearClipPlane = 1.5f,
@@ -372,6 +385,7 @@ MonoBehaviour:
                     boxProjection = true,
                     boxSize = new Vector3(4, 1, 8),
                     capturePositionWS = new Vector3(4, 6, 3),
+                    captureRotationWS = Quaternion.Euler(341.35f, 165.2f, 12.25f),
                     cullingMask = 308,
                     farClipPlane = 850,
                     nearClipPlane = 1.5f,
@@ -389,6 +403,7 @@ MonoBehaviour:
                     boxProjection = true,
                     boxSize = new Vector3(3.5f, 7, 2),
                     capturePositionWS = new Vector3(1.2f, 4, 5.12f),
+                    captureRotationWS = Quaternion.Euler(341.35f, 165.2f, 12.25f),
                     cullingMask = 308,
                     farClipPlane = 850,
                     nearClipPlane = 1.35f,
@@ -406,6 +421,7 @@ MonoBehaviour:
                     boxProjection = true,
                     boxSize = new Vector3(3.5f, 7, 2),
                     capturePositionWS = new Vector3(1.2f, 4, 5.12f),
+                    captureRotationWS = Quaternion.Euler(341.35f, 165.2f, 12.25f),
                     cullingMask = 308,
                     farClipPlane = 870,
                     nearClipPlane = 5.5f,
@@ -427,8 +443,15 @@ MonoBehaviour:
                     out GameObject prefab
                 ))
                 {
-                    var influencePositionWS = legacyProbeData.capturePositionWS + legacyProbeData.boxOffset;
-                    var proxyToWorld = Matrix4x4.TRS(influencePositionWS, Quaternion.identity, Vector3.one);
+                    var mat = Matrix4x4.TRS(
+                        legacyProbeData.capturePositionWS,
+                        legacyProbeData.captureRotationWS,
+                        Vector3.one
+                    );
+                    var influencePositionWS = mat.MultiplyPoint(legacyProbeData.boxOffset);
+                    var influenceRotationWS = mat.rotation;
+                    var proxyToWorld = Matrix4x4.TRS(influencePositionWS, influenceRotationWS, Vector3.one);
+
                     var capturePositionPS = (Vector3)(proxyToWorld.inverse * legacyProbeData.capturePositionWS);
 
                     var instance = Object.Instantiate(prefab);

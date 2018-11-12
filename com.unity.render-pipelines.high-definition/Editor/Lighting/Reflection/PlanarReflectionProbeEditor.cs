@@ -12,7 +12,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
     [CustomEditorForRenderPipeline(typeof(PlanarReflectionProbe), typeof(HDRenderPipelineAsset))]
     [CanEditMultipleObjects]
-    sealed class PlanarReflectionProbeEditor : HDProbeEditor<PlanarReflectionProbeUISettingsProvider, PlanarReflectionProbeUI, SerializedPlanarReflectionProbe>
+    sealed class PlanarReflectionProbeEditor : HDProbeEditor<PlanarReflectionProbeUISettingsProvider, SerializedPlanarReflectionProbe>
     {
         const float k_PreviewHeight = 128;
 
@@ -64,7 +64,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         internal override HDProbe GetTarget(Object editorTarget) => editorTarget as HDProbe;
 
         protected override void DrawAdditionalCaptureSettings(
-            PlanarReflectionProbeUI s, SerializedPlanarReflectionProbe d, Editor o
+            HDProbeUI s, SerializedPlanarReflectionProbe d, Editor o
         )
         {
             ++EditorGUI.indentLevel;
@@ -75,7 +75,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         }
 
         protected override void DrawHandles(
-            PlanarReflectionProbeUI s,
+            HDProbeUI s,
             SerializedPlanarReflectionProbe d,
             Editor o
         )
