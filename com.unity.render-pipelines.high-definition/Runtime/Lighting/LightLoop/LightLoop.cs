@@ -2341,46 +2341,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             BuildGPULightListsCommon(hdCamera, cmd, cameraDepthBufferRT, stencilTextureRT, skyEnabled);
             PushGlobalParams(hdCamera, cmd);
         }
-
-#if UNITY_2019_1_OR_NEWER
-        public GraphicsFence BuildGPULightListsAsyncBegin(HDCamera hdCamera, ScriptableRenderContext renderContext, RenderTargetIdentifier cameraDepthBufferRT, RenderTargetIdentifier stencilTextureRT, GraphicsFence startFence, bool skyEnabled)
-#else
-        public GPUFence BuildGPULightListsAsyncBegin(HDCamera hdCamera, ScriptableRenderContext renderContext, RenderTargetIdentifier cameraDepthBufferRT, RenderTargetIdentifier stencilTextureRT, GPUFence startFence, bool skyEnabled)
-#endif
-        {
-            var cmd = CommandBufferPool.Get("Build light list");
-#if UNITY_2019_1_OR_NEWER
-            cmd.WaitOnAsyncGraphicsFence(startFence);
-#else
-            cmd.WaitOnGPUFence(startFence);
-#endif
-
-            BuildGPULightListsCommon(hdCamera, cmd, cameraDepthBufferRT, stencilTextureRT, skyEnabled);
-#if UNITY_2019_1_OR_NEWER
-            GraphicsFence completeFence = cmd.CreateAsyncGraphicsFence();
-#else
-            GPUFence completeFence = cmd.CreateGPUFence();
-#endif
-            renderContext.ExecuteCommandBufferAsync(cmd, ComputeQueueType.Background);
-            CommandBufferPool.Release(cmd);
-
-            return completeFence;
-        }
-
-#if UNITY_2019_1_OR_NEWER
-        public void BuildGPULightListAsyncEnd(HDCamera hdCamera, CommandBuffer cmd, GraphicsFence doneFence)
-#else
-        public void BuildGPULightListAsyncEnd(HDCamera hdCamera, CommandBuffer cmd, GPUFence doneFence)
-#endif
-        {
-#if UNITY_2019_1_OR_NEWER
-            cmd.WaitOnAsyncGraphicsFence(doneFence);
-#else
-            cmd.WaitOnGPUFence(doneFence);
-#endif
-            PushGlobalParams(hdCamera, cmd);
-        }
-
         void UpdateDataBuffers()
         {
             m_DirectionalLightDatas.SetData(m_lightList.directionalLights);
@@ -2404,7 +2364,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             return add;
         }
 
-        void PushGlobalParams(HDCamera hdCamera, CommandBuffer cmd)
+        public void PushGlobalParams(HDCamera hdCamera, CommandBuffer cmd)
         {
             using (new ProfilingSample(cmd, "Push Global Parameters", CustomSamplerId.TPPushGlobalParameters.GetSampler()))
             {
@@ -2523,11 +2483,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 float contactShadowFadeEnd = m_ContactShadows.maxDistance;
                 float contactShadowOneOverFadeRange = 1.0f / Math.Max(1e-6f, contactShadowRange);
                 Vector4 contactShadowParams = new Vector4(m_ContactShadows.length, m_ContactShadows.distanceScaleFactor, contactShadowFadeEnd, contactShadowOneOverFadeRange);
-                var postProcessLayer = hdCamera.camera.GetComponent<PostProcessLayer>();
-                bool taaEnabled = hdCamera.camera.cameraType == CameraType.Game &&
-                                  HDUtils.IsTemporalAntialiasingActive(postProcessLayer);
-                float timeVaryingNoise = taaEnabled ? 1.0f : 0.0f;
-                Vector4 contactShadowParams2 = new Vector4(m_ContactShadows.opacity, timeVaryingNoise, firstMipOffsetY, 0.0f);
+                Vector4 contactShadowParams2 = new Vector4(m_ContactShadows.opacity, firstMipOffsetY, 0.0f, 0.0f);
                 cmd.SetComputeVectorParam(screenSpaceShadowComputeShader, HDShaderIDs._ContactShadowParamsParameters, contactShadowParams);
                 cmd.SetComputeVectorParam(screenSpaceShadowComputeShader, HDShaderIDs._ContactShadowParamsParameters2, contactShadowParams2);
                 cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._DirectionalContactShadowSampleCount, m_ContactShadows.sampleCount);

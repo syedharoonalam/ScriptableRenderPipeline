@@ -16,29 +16,6 @@ class SampleRuntimeTests : IPrebuildSetup
 
     static List<string> s_Scenes;
 
-    static PostProcessingTests()
-    {
-        s_Scenes = new List<string>
-        {
-            "Packages/com.unity.render-pipelines.high-definition/Tests/Runtime/Scenes/0010_Volumes.unity",
-        };
-    }
-
-    public void Setup()
-    {
-#if UNITY_EDITOR
-        Debug.Log("Adding scenes to build settings...");
-
-        var scenes = new EditorBuildSettingsScene[s_Scenes.Count];
-
-        for (int i = 0; i < s_Scenes.Count; i++)
-            scenes[i] = new EditorBuildSettingsScene(s_Scenes[i], true);
-
-        EditorBuildSettings.scenes = scenes;
-#endif
-    }
-
-    [UnityTest]
     public IEnumerator SampleLoadSceneTest()
     {
         SceneManager.LoadScene(s_Scenes[0]);

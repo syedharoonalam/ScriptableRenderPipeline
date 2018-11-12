@@ -40,7 +40,9 @@
     "com.unity.modules.xr": "1.0.0"
   },
   "testables": [
+    "com.unity.render-pipelines.core",
     "com.unity.render-pipelines.high-definition",
+    "com.unity.shadergraph",
     "com.unity.testframework.graphics"
   ]
 }
