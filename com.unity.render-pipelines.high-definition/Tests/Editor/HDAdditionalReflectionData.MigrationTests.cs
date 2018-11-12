@@ -128,8 +128,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Tests
                     Assert.AreEqual(legacyProbeData.farClipPlane, settings.camera.frustum.farClipPlane);
                     Assert.AreEqual(legacyProbeData.fieldOfview, settings.camera.frustum.fieldOfView);
                     Assert.AreEqual(legacyProbeData.renderingPath, (int)settings.camera.renderingPath);
-                    Assert.AreEqual(influencePositionWS, probe.transform.position);
-                    Assert.AreEqual(capturePositionPS, settings.proxySettings.capturePositionProxySpace);
+                    Assert.IsTrue((influencePositionWS - probe.transform.position).sqrMagnitude < 0.001f);
+                    Assert.IsTrue((capturePositionPS - settings.proxySettings.capturePositionProxySpace).sqrMagnitude < 0.001f);
                     Assert.AreEqual(ProbeSettings.ProbeType.ReflectionProbe, settings.type);
                 }
             }
