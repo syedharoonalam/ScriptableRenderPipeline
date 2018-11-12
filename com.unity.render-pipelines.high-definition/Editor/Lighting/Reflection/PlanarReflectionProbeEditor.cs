@@ -16,6 +16,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
     {
         const float k_PreviewHeight = 128;
 
+        static Mesh k_QuadMesh;
+        static Material k_PreviewMaterial;
+        static Material k_PreviewOutlineMaterial;
+
         List<Texture> m_PreviewedTextures = new List<Texture>();
 
         public override bool HasPreviewGUI()
@@ -154,8 +158,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             });
         }
 
-        static Mesh k_QuadMesh;
-        static Material k_PreviewMaterial;
         [DrawGizmo(GizmoType.Selected)]
         static void DrawSelectedGizmo(PlanarReflectionProbe probe, GizmoType gizmoType)
         {
@@ -185,6 +187,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 k_QuadMesh = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
             if (k_PreviewMaterial == null)
                 k_PreviewMaterial = new Material(Shader.Find("Debug/PlanarReflectionProbePreview"));
+            if (k_PreviewOutlineMaterial == null)
+                k_PreviewOutlineMaterial = new Material(Shader.Find("Hidden/UnlitTransparentColored"));
 
             var proxyToWorld = probe.proxyToWorld;
             var settings = probe.settings;
@@ -206,6 +210,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 // For Camera relative rendering, we need to translate with the position of the currently rendering camera
                 capturePositionWS -= cameraPositionWS;
             }
+
+            // Draw outline
+            k_PreviewOutlineMaterial.SetColor("_Color", InfluenceVolumeUI.k_GizmoThemeColorBase);
+            k_PreviewOutlineMaterial.SetPass(0);
+            Graphics.DrawMeshNow(k_QuadMesh, Matrix4x4.TRS(mirrorPosition, mirrorRotation, Vector3.one * capturePointPreviewSize * 2.1f));
 
             k_PreviewMaterial.SetTexture("_MainTex", probe.texture);
             k_PreviewMaterial.SetMatrix("_CaptureVPMatrix", vp);

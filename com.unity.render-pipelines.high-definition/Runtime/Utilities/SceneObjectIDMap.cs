@@ -16,8 +16,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             if (gameObject == null)
                 throw new ArgumentNullException("gameObject");
 
-            var map = GetOrCreateSceneIDMapFor(gameObject.scene);
-            return map.TryGetSceneIDFor(gameObject, out index, out category);
+            index = default;
+            category = default;
+
+            return TryGetOrCreateSceneIDMapFor(gameObject.scene, out SceneObjectIDMapSceneAsset map)
+                && map.TryGetSceneIDFor(gameObject, out index, out category);
         }
 
         public static int GetOrCreateSceneObjectID<TCategory>(GameObject gameObject, TCategory category)
@@ -29,10 +32,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             if (gameObject == null)
                 throw new ArgumentNullException("gameObject");
 
-            var map = GetOrCreateSceneIDMapFor(gameObject.scene);
-            int index;
-            TCategory registeredCategory;
-            if (!map.TryGetSceneIDFor(gameObject, out index, out registeredCategory))
+            if (!TryGetOrCreateSceneIDMapFor(gameObject.scene, out SceneObjectIDMapSceneAsset map))
+                throw new ArgumentException($"Provided GameObject {gameObject} does not belong to a loaded scene.");
+
+            if (!map.TryGetSceneIDFor(gameObject, out int index, out TCategory registeredCategory))
             {
                 var insertion = map.TryInsert(gameObject, category, out index);
                 Assert.IsTrue(insertion);
@@ -75,13 +78,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             if (outIndices == null)
                 throw new ArgumentNullException("outIndices");
 
-            SceneObjectIDMapSceneAsset map;
-            if (TryGetSceneIDMapFor(scene, out map))
+            if (TryGetSceneIDMapFor(scene, out SceneObjectIDMapSceneAsset map))
                 map.GetALLIDsFor(category, outGameObjects, outIndices);
         }
 
         static bool TryGetSceneIDMapFor(Scene scene, out SceneObjectIDMapSceneAsset map)
         {
+            if (!scene.isLoaded)
+            {
+                map = default;
+                return false;
+            }
+
             var roots = scene.GetRootGameObjects();
             for (int i = 0; i < roots.Length; ++i)
             {
@@ -108,13 +116,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             return result;
         }
 
-        static SceneObjectIDMapSceneAsset GetOrCreateSceneIDMapFor(Scene scene)
+        static bool TryGetOrCreateSceneIDMapFor(Scene scene, out SceneObjectIDMapSceneAsset map)
         {
-            SceneObjectIDMapSceneAsset map;
+            if (!scene.isLoaded)
+            {
+                map = default;
+                return false;
+            }
+
             if (!TryGetSceneIDMapFor(scene, out map))
                 map = CreateSceneIDMapFor(scene);
 
-            return map;
+            return true;
         }
     }
 
