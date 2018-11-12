@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - The user documentation for LWRP is now in this GitHub repo, instead of in the separate GitHub wiki. You can find the most up-to-date pages in the [TableOfContents.md](TableOfCotents.md) file. Pages not listed in that file are still in progress.
-- LWRP now uses new Unity recorder extension to make it possible to capture the output of Cameras.
+- LWRP now uses the Unity recorder extension to make it possible to capture the output of Cameras.
 
 ## [5.0.0-preview] - 2018-09-28
 ### Added
