@@ -174,7 +174,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 {
                     defaultModeField.SetEnabled(!defaultModeField.enabledSelf);
                 }
-                m_OnExposedToggle += toggleDefaultModeFieldEnabled;
+                m_OnExposedToggle += ToggleDefaultModeFieldEnabled;
                 AddRow("Mode", defaultModeField);
             }
             else if (property is Texture2DArrayShaderProperty)
