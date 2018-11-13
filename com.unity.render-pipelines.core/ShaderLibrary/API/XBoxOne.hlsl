@@ -20,8 +20,8 @@
 // Intrinsics
 #define SUPPORTS_WAVE_INTRINSICS
 
-#define INTRINSIC_WAVEREADFIRSTLANE
-#define WaveReadFirstLane __XB_MakeUniform
+#define INTRINSIC_WaveReadLaneFirst
+#define WaveReadLaneFirst __XB_MakeUniform
 #define INTRINSIC_MINMAX3
 #define Min3 __XB_Min3_F32
 #define Max3 __XB_Max3_F32

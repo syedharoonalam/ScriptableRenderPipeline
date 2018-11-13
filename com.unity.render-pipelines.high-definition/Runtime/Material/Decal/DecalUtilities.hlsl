@@ -216,7 +216,7 @@ DecalSurfaceData GetDecalSurfaceData(PositionInputs posInput, inout float alpha)
 
     #if SCALARIZE_LIGHT_LOOP
     // Fast path is when we all pixels in a wave are accessing same tile or cluster.
-    uint decalStartLane0 = WaveReadFirstLane(decalStart);
+    uint decalStartLane0 = WaveReadLaneFirst(decalStart);
     bool fastPath = all(Ballot(decalStart == decalStartLane0) == ~0);
     #endif
 
@@ -261,9 +261,9 @@ DecalSurfaceData GetDecalSurfaceData(PositionInputs posInput, inout float alpha)
                 break;
             }
         }
-        // Note that the WaveReadFirstLane should not be needed, but the compiler might insist in putting the result in VGPR.
+        // Note that the WaveReadLaneFirst should not be needed, but the compiler might insist in putting the result in VGPR.
         // However, we are certain at this point that the index is scalar.
-        s_decalIdx = WaveReadFirstLane(s_decalIdx);
+        s_decalIdx = WaveReadLaneFirst(s_decalIdx);
 
 #endif // SCALARIZE_LIGHT_LOOP
 

@@ -8,8 +8,8 @@
 #define BitFieldExtractSignExtend __v_bfe_i32
 #define INTRINSIC_BITFIELD_INSERT
 #define BitFieldInsert __v_bfi_b32
-#define INTRINSIC_WAVEREADFIRSTLANE
-#define WaveReadFirstLane ReadFirstLane
+#define INTRINSIC_WaveReadLaneFirst
+#define WaveReadLaneFirst ReadFirstLane
 #define INTRINSIC_MAD24
 #define Mad24Int mad24
 #define Mad24Uint mad24

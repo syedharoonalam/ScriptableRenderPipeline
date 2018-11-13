@@ -148,7 +148,7 @@ void LightLoop( float3 V, PositionInputs posInput, PreLightData preLightData, BS
 
 #if SCALARIZE_LIGHT_LOOP
         // Fast path is when we all pixels in a wave are accessing same tile or cluster.
-        uint lightStartLane0 = WaveReadFirstLane(lightStart);
+        uint lightStartLane0 = WaveReadLaneFirst(lightStart);
         fastPath = all(Ballot(lightStart == lightStartLane0) == ~0);
 #endif
 
@@ -188,9 +188,9 @@ void LightLoop( float3 V, PositionInputs posInput, PreLightData preLightData, BS
                     break;
                 }
             }
-            // Note that the WaveReadFirstLane should not be needed, but the compiler might insist in putting the result in VGPR.
+            // Note that the WaveReadLaneFirst should not be needed, but the compiler might insist in putting the result in VGPR.
             // However, we are certain at this point that the index is scalar.
-            s_lightIdx = WaveReadFirstLane(s_lightIdx);
+            s_lightIdx = WaveReadLaneFirst(s_lightIdx);
 #endif
             LightData s_lightData = FetchLight(s_lightIdx);
 
@@ -284,7 +284,7 @@ void LightLoop( float3 V, PositionInputs posInput, PreLightData preLightData, BS
 
     #if SCALARIZE_LIGHT_LOOP
         // Fast path is when we all pixels in a wave is accessing same tile or cluster.
-        uint envStartFirstLane = WaveReadFirstLane(envLightStart);
+        uint envStartFirstLane = WaveReadLaneFirst(envLightStart);
         fastPath = all(Ballot(envLightStart == envStartFirstLane) == ~0);
     #endif
 
@@ -354,9 +354,9 @@ void LightLoop( float3 V, PositionInputs posInput, PreLightData preLightData, BS
                         break;
                     }
                 }
-                // Note that the WaveReadFirstLane should not be needed, but the compiler might insist in putting the result in VGPR.
+                // Note that the WaveReadLaneFirst should not be needed, but the compiler might insist in putting the result in VGPR.
                 // However, we are certain at this point that the index is scalar.
-                s_envLightIdx = WaveReadFirstLane(s_envLightIdx);
+                s_envLightIdx = WaveReadLaneFirst(s_envLightIdx);
 
             #endif
 
