@@ -255,7 +255,7 @@ DecalSurfaceData GetDecalSurfaceData(PositionInputs posInput, inout float alpha)
             // If we are not in fast path, v_lightIdx is not scalar, so we need to query the Min value across the wave. 
             s_decalIdx = WaveActiveMin(v_decalIdx);
             // If WaveActiveMin returns 0xffffffff it means that all lanes are actually dead, so we can safely ignore the loop and move forward.
-            // This could happen as an helper lane could reach this point, hence having a valid v_lightIdx, but their values will be ignored by the WaveMin
+            // This could happen as an helper lane could reach this point, hence having a valid v_lightIdx, but their values will be ignored by the WaveActiveMin
             if (s_decalIdx == -1)
             {
                 break;
