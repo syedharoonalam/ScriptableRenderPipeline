@@ -246,7 +246,7 @@ void ToggleBit(inout uint data, uint offset)
 }
 #endif
 
-#ifndef INTRINSIC_WaveReadLaneFirst
+#ifndef INTRINSIC_WAVEREADFIRSTLANE
     // Warning: for correctness, the argument's value must be the same across all lanes of the wave.
     TEMPLATE_1_REAL(WaveReadLaneFirst, scalarValue, return scalarValue)
     TEMPLATE_1_INT(WaveReadLaneFirst, scalarValue, return scalarValue)
