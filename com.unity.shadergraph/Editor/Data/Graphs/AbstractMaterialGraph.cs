@@ -214,6 +214,11 @@ namespace UnityEditor.ShaderGraph
             }
         }
 
+        public AbstractMaterialGraph()
+        {
+            m_GroupNodes[Guid.Empty] = new List<AbstractMaterialNode>();
+        }
+
         public void ClearChanges()
         {
             m_AddedNodes.Clear();
@@ -321,10 +326,7 @@ namespace UnityEditor.ShaderGraph
             }
             m_NodeDictionary.Add(materialNode.guid, materialNode);
             m_AddedNodes.Add(materialNode);
-            if (m_GroupNodes.Any())
-            {
-                m_GroupNodes[materialNode.groupGuid].Add(materialNode);
-            }
+            m_GroupNodes[materialNode.groupGuid].Add(materialNode);
         }
 
         public void RemoveNode(INode node)
