@@ -22,7 +22,7 @@
 // Intrinsics
 #define SUPPORTS_WAVE_INTRINSICS
 
-#define INTRINSIC_WaveReadLaneFirst
+#define INTRINSIC_WAVEREADFIRSTLANE
 #define WaveReadLaneFirst __XB_MakeUniform
 #define INTRINSIC_BITFIELD_EXTRACT
 #define BitFieldExtract __XB_UBFE
