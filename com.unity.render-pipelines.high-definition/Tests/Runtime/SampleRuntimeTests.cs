@@ -14,7 +14,7 @@ class SampleRuntimeTests
 {
     const float k_Epsilon = 1e-4f;
 
-    static List<string> s_Scenes;
+    static List<string> s_Scenes = new List<string> { };
 
     public IEnumerator SampleLoadSceneTest()
     {
