@@ -185,6 +185,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 }
                 cubeRT.Release();
                 planarRT.Release();
+
                 // Copy texture from cache
                 for (int i = 0; i < addCount; ++i)
                 {
@@ -196,8 +197,25 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     Assert.IsTrue(File.Exists(cacheFile));
 
                     var bakedTexturePath = HDBakingUtilities.GetBakedTextureFilePath(probe);
-                    HDBakingUtilities.CreateParentDirectoryIfMissing(bakedTexturePath);
                     File.Copy(cacheFile, bakedTexturePath, true);
+                }
+                // AssetPipeline bug
+                // Sometimes, the baked texture reference is destroyed during 'AssetDatabase.StopAssetEditing()'
+                //   thus, the reference to the baked texture in the probe is lost
+                // Although, importing twice the texture seems to workaround the issue
+                for (int j = 0; j < 2; ++j)
+                {
+                    AssetDatabase.StartAssetEditing();
+                    for (int i = 0; i < bakedProbes.Count; ++i)
+                    {
+                        var index = addIndices[i];
+                        var instanceId = states[index].instanceID;
+                        var probe = (HDProbe)EditorUtility.InstanceIDToObject(instanceId);
+                        var bakedTexturePath = HDBakingUtilities.GetBakedTextureFilePath(probe);
+                        AssetDatabase.ImportAsset(bakedTexturePath);
+                        ImportAssetAt(probe, bakedTexturePath);
+                    }
+                    AssetDatabase.StopAssetEditing();
                 }
                 // Import assets
                 AssetDatabase.StartAssetEditing();
@@ -209,21 +227,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     var cacheFile = GetGICacheFileForHDProbe(states[index].probeBakingHash);
 
                     var bakedTexturePath = HDBakingUtilities.GetBakedTextureFilePath(probe);
-
-                    // Get or create the baked texture asset for the probe
                     var bakedTexture = AssetDatabase.LoadAssetAtPath<Texture>(bakedTexturePath);
-                    AssetDatabase.ImportAsset(bakedTexturePath);
-                    ImportAssetAt(probe, bakedTexturePath);
+                    Assert.IsNotNull(bakedTexture, "The baked texture was imported before, " +
+                        "so it must exists in AssetDatabase");
+
                     probe.SetTexture(ProbeSettings.Mode.Baked, bakedTexture);
-                }
-                AssetDatabase.StopAssetEditing();
-                for (int i = 0; i < addCount; ++i)
-                {
-                    var index = addIndices[i];
-                    var instanceId = states[index].instanceID;
-                    var probe = (HDProbe)EditorUtility.InstanceIDToObject(instanceId);
                     EditorUtility.SetDirty(probe);
                 }
+                AssetDatabase.StopAssetEditing();
 
                 // == 5. ==
 
@@ -279,8 +290,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
         public static bool BakeProbes(IList<HDProbe> bakedProbes)
         {
-            var hdPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-            if (hdPipeline == null)
+            if (!(RenderPipelineManager.currentPipeline is HDRenderPipeline hdPipeline))
             {
                 Debug.LogWarning("HDBakedReflectionSystem work with HDRP, " +
                     "please switch your render pipeline or use another reflection system");
@@ -292,11 +302,30 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             var cubeRT = HDRenderUtilities.CreateReflectionProbeRenderTarget(cubemapSize);
             var planarRT = HDRenderUtilities.CreatePlanarProbeRenderTarget(planarSize);
+
+            // Render and write the result to disk
             for (int i = 0; i < bakedProbes.Count; ++i)
             {
                 var probe = bakedProbes[i];
                 var bakedTexturePath = HDBakingUtilities.GetBakedTextureFilePath(probe);
                 RenderAndWriteToFile(probe, bakedTexturePath, cubeRT, planarRT);
+            }
+
+            // AssetPipeline bug
+            // Sometimes, the baked texture reference is destroyed during 'AssetDatabase.StopAssetEditing()'
+            //   thus, the reference to the baked texture in the probe is lost
+            // Although, importing twice the texture seems to workaround the issue
+            for (int j = 0; j < 2; ++j)
+            {
+                AssetDatabase.StartAssetEditing();
+                for (int i = 0; i < bakedProbes.Count; ++i)
+                {
+                    var probe = bakedProbes[i];
+                    var bakedTexturePath = HDBakingUtilities.GetBakedTextureFilePath(probe);
+                    AssetDatabase.ImportAsset(bakedTexturePath);
+                    ImportAssetAt(probe, bakedTexturePath);
+                }
+                AssetDatabase.StopAssetEditing();
             }
 
             AssetDatabase.StartAssetEditing();
@@ -307,14 +336,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // Get or create the baked texture asset for the probe
                 var bakedTexture = AssetDatabase.LoadAssetAtPath<Texture>(bakedTexturePath);
-                AssetDatabase.ImportAsset(bakedTexturePath);
+                Assert.IsNotNull(bakedTexture, "The baked texture was imported before, " +
+                    "so it must exists in AssetDatabase");
+
+                // Update import settings
                 ImportAssetAt(probe, bakedTexturePath);
                 probe.SetTexture(ProbeSettings.Mode.Baked, bakedTexture);
                 AssignRenderData(probe, bakedTexturePath);
+                EditorUtility.SetDirty(probe);
             }
             AssetDatabase.StopAssetEditing();
-            for (int i = 0; i < bakedProbes.Count; ++i)
-                EditorUtility.SetDirty(bakedProbes[i]);
 
             cubeRT.Release();
             planarRT.Release();
@@ -534,6 +565,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 states[i].probeBakingHash = states[i].probeSettingsHash;
                 HashUtilities.ComputeHash128(ref allProbeDependencyHash, ref states[i].probeBakingHash);
             }
+        }
+
+        private static void CreateAndImportDummyBakedTextureIfRequired(HDProbe probe, string bakedTexturePath)
+        {
+            var bytes = Texture2D.whiteTexture.EncodeToPNG();
+            File.WriteAllBytes(bakedTexturePath, bytes);
+            AssetDatabase.ImportAsset(bakedTexturePath);
+            ImportAssetAt(probe, bakedTexturePath);
         }
 
         static Func<string> GetGICachePath = Expression.Lambda<Func<string>>(
