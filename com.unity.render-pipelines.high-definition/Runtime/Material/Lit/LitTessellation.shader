@@ -313,7 +313,8 @@ Shader "HDRenderPipeline/LitTessellation"
     // variable declaration
     //-------------------------------------------------------------------------------------
 
-    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+    // Can't include 'ShaderVariables.hlsl' here because of USE_LEGACY_UNITY_MATRIX_VARIABLES. :-(
+    // #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.cs.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitProperties.hlsl"
 
@@ -351,6 +352,7 @@ Shader "HDRenderPipeline/LitTessellation"
 
             #define SHADERPASS SHADERPASS_DEPTH_ONLY
             #define SCENESELECTIONPASS // This will drive the output of the scene selection shader
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "ShaderPass/LitDepthPass.hlsl"
             #include "LitData.hlsl"
@@ -395,6 +397,8 @@ Shader "HDRenderPipeline/LitTessellation"
             // When we have alpha test, we will force a depth prepass so we always bypass the clip instruction in the GBuffer
             #define SHADERPASS_GBUFFER_BYPASS_ALPHA_TEST
         #endif
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
         #ifdef DEBUG_DISPLAY
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
         #endif
@@ -426,6 +430,7 @@ Shader "HDRenderPipeline/LitTessellation"
             #undef TESSELLATION_ON
 
             #define SHADERPASS SHADERPASS_LIGHT_TRANSPORT
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "ShaderPass/LitSharePass.hlsl"
             #include "LitData.hlsl"
@@ -454,6 +459,7 @@ Shader "HDRenderPipeline/LitTessellation"
 
             #define SHADERPASS SHADERPASS_SHADOWS
             #define USE_LEGACY_UNITY_MATRIX_VARIABLES
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "ShaderPass/LitDepthPass.hlsl"
             #include "LitData.hlsl"
@@ -482,6 +488,7 @@ Shader "HDRenderPipeline/LitTessellation"
             #pragma multi_compile _ WRITE_MSAA_DEPTH
 
             #define SHADERPASS SHADERPASS_DEPTH_ONLY
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
 
@@ -523,6 +530,7 @@ Shader "HDRenderPipeline/LitTessellation"
             #pragma domain Domain
 
             #define SHADERPASS SHADERPASS_VELOCITY
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #ifdef WRITE_NORMAL_BUFFER // If enabled we need all regular interpolator
             #include "ShaderPass/LitSharePass.hlsl"
@@ -552,6 +560,7 @@ Shader "HDRenderPipeline/LitTessellation"
             #pragma domain Domain
 
             #define SHADERPASS SHADERPASS_DISTORTION
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "ShaderPass/LitDistortionPass.hlsl"
             #include "LitData.hlsl"
@@ -576,6 +585,7 @@ Shader "HDRenderPipeline/LitTessellation"
 
             #define SHADERPASS SHADERPASS_DEPTH_ONLY
             #define CUTOFF_TRANSPARENT_DEPTH_PREPASS
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "ShaderPass/LitDepthPass.hlsl"
             #include "LitData.hlsl"
@@ -617,6 +627,7 @@ Shader "HDRenderPipeline/LitTessellation"
             #pragma multi_compile USE_FPTL_LIGHTLIST USE_CLUSTERED_LIGHTLIST
 
             #define SHADERPASS SHADERPASS_FORWARD
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
 
         #ifdef DEBUG_DISPLAY
@@ -689,6 +700,8 @@ Shader "HDRenderPipeline/LitTessellation"
             #ifndef _SURFACE_TYPE_TRANSPARENT
                 #define SHADERPASS_FORWARD_BYPASS_ALPHA_TEST
             #endif
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
 
         #ifdef DEBUG_DISPLAY
@@ -731,6 +744,7 @@ Shader "HDRenderPipeline/LitTessellation"
 
             #define SHADERPASS SHADERPASS_DEPTH_ONLY
             #define CUTOFF_TRANSPARENT_DEPTH_POSTPASS
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "ShaderPass/LitDepthPass.hlsl"
             #include "LitData.hlsl"
