@@ -58,17 +58,18 @@
     float3 FunctionName(float3 Parameter1) { FunctionBody; } \
     float4 FunctionName(float4 Parameter1) { FunctionBody; }
 
-
-#define TEMPLATE_1_INT(FunctionName, Parameter1, FunctionBody) \
+#ifdef SHADER_API_GLES
+    #define TEMPLATE_1_INT(FunctionName, Parameter1, FunctionBody) \
     int    FunctionName(int    Parameter1) { FunctionBody; } \
     int2   FunctionName(int2   Parameter1) { FunctionBody; } \
     int3   FunctionName(int3   Parameter1) { FunctionBody; } \
     int4   FunctionName(int4   Parameter1) { FunctionBody; }
-
-#ifdef SHADER_API_GLES
-    #define TEMPLATE_1_UINT(FunctionName, Parameter1, FunctionBody) 
 #else
-    #define TEMPLATE_1_UINT(FunctionName, Parameter1, FunctionBody) \
+    #define TEMPLATE_1_INT(FunctionName, Parameter1, FunctionBody) \
+    int    FunctionName(int    Parameter1) { FunctionBody; } \
+    int2   FunctionName(int2   Parameter1) { FunctionBody; } \
+    int3   FunctionName(int3   Parameter1) { FunctionBody; } \
+    int4   FunctionName(int4   Parameter1) { FunctionBody; } \
     uint   FunctionName(uint   Parameter1) { FunctionBody; } \
     uint2  FunctionName(uint2  Parameter1) { FunctionBody; } \
     uint3  FunctionName(uint3  Parameter1) { FunctionBody; } \
@@ -91,23 +92,24 @@
     float3 FunctionName(float3 Parameter1, float3 Parameter2) { FunctionBody; } \
     float4 FunctionName(float4 Parameter1, float4 Parameter2) { FunctionBody; }
 
-#define TEMPLATE_2_INT(FunctionName, Parameter1, Parameter2, FunctionBody) \
+
+#ifdef SHADER_API_GLES
+    #define TEMPLATE_2_INT(FunctionName, Parameter1, Parameter2, FunctionBody) \
     int    FunctionName(int    Parameter1, int    Parameter2) { FunctionBody; } \
     int2   FunctionName(int2   Parameter1, int2   Parameter2) { FunctionBody; } \
     int3   FunctionName(int3   Parameter1, int3   Parameter2) { FunctionBody; } \
     int4   FunctionName(int4   Parameter1, int4   Parameter2) { FunctionBody; }
-
-#ifdef SHADER_API_GLES
-    #define TEMPLATE_2_UINT(FunctionName, Parameter1, Parameter2, FunctionBody)  
 #else
-    #define TEMPLATE_2_UINT(FunctionName, Parameter1, Parameter2, FunctionBody) \
-    uint    FunctionName(uint    Parameter1, uint    Parameter2) { FunctionBody; } \
-    uint2   FunctionName(uint2   Parameter1, uint2   Parameter2) { FunctionBody; } \
-    uint3   FunctionName(uint3   Parameter1, uint3   Parameter2) { FunctionBody; } \
-    uint4   FunctionName(uint4   Parameter1, uint4   Parameter2) { FunctionBody; }
+    #define TEMPLATE_2_INT(FunctionName, Parameter1, Parameter2, FunctionBody) \
+    int    FunctionName(int    Parameter1, int    Parameter2) { FunctionBody; } \
+    int2   FunctionName(int2   Parameter1, int2   Parameter2) { FunctionBody; } \
+    int3   FunctionName(int3   Parameter1, int3   Parameter2) { FunctionBody; } \
+    int4   FunctionName(int4   Parameter1, int4   Parameter2) { FunctionBody; } \
+    uint   FunctionName(uint   Parameter1, uint   Parameter2) { FunctionBody; } \
+    uint2  FunctionName(uint2  Parameter1, uint2  Parameter2) { FunctionBody; } \
+    uint3  FunctionName(uint3  Parameter1, uint3  Parameter2) { FunctionBody; } \
+    uint4  FunctionName(uint4  Parameter1, uint4  Parameter2) { FunctionBody; }
 #endif
-
-
 
 #define TEMPLATE_3_FLT(FunctionName, Parameter1, Parameter2, Parameter3, FunctionBody) \
     float  FunctionName(float  Parameter1, float  Parameter2, float  Parameter3) { FunctionBody; } \
@@ -125,16 +127,18 @@
     float3 FunctionName(float3 Parameter1, float3 Parameter2, float3 Parameter3) { FunctionBody; } \
     float4 FunctionName(float4 Parameter1, float4 Parameter2, float4 Parameter3) { FunctionBody; }
 
-#define TEMPLATE_3_INT(FunctionName, Parameter1, Parameter2, Parameter3, FunctionBody) \
+#ifdef SHADER_API_GLES
+    #define TEMPLATE_3_INT(FunctionName, Parameter1, Parameter2, Parameter3, FunctionBody) \
     int    FunctionName(int    Parameter1, int    Parameter2, int    Parameter3) { FunctionBody; } \
     int2   FunctionName(int2   Parameter1, int2   Parameter2, int2   Parameter3) { FunctionBody; } \
     int3   FunctionName(int3   Parameter1, int3   Parameter2, int3   Parameter3) { FunctionBody; } \
     int4   FunctionName(int4   Parameter1, int4   Parameter2, int4   Parameter3) { FunctionBody; }
-
-#ifdef SHADER_API_GLES
-    #define TEMPLATE_3_UINT(FunctionName, Parameter1, Parameter2, Parameter3, FunctionBody) 
 #else
-    #define TEMPLATE_3_UINT(FunctionName, Parameter1, Parameter2, Parameter3, FunctionBody) \
+    #define TEMPLATE_3_INT(FunctionName, Parameter1, Parameter2, Parameter3, FunctionBody) \
+    int    FunctionName(int    Parameter1, int    Parameter2, int    Parameter3) { FunctionBody; } \
+    int2   FunctionName(int2   Parameter1, int2   Parameter2, int2   Parameter3) { FunctionBody; } \
+    int3   FunctionName(int3   Parameter1, int3   Parameter2, int3   Parameter3) { FunctionBody; } \
+    int4   FunctionName(int4   Parameter1, int4   Parameter2, int4   Parameter3) { FunctionBody; } \
     uint   FunctionName(uint   Parameter1, uint   Parameter2, uint   Parameter3) { FunctionBody; } \
     uint2  FunctionName(uint2  Parameter1, uint2  Parameter2, uint2  Parameter3) { FunctionBody; } \
     uint3  FunctionName(uint3  Parameter1, uint3  Parameter2, uint3  Parameter3) { FunctionBody; } \

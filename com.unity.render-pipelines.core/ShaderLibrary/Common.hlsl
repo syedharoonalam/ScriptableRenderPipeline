@@ -250,26 +250,21 @@ void ToggleBit(inout uint data, uint offset)
     // Warning: for correctness, the argument's value must be the same across all lanes of the wave.
     TEMPLATE_1_REAL(WaveReadLaneFirst, scalarValue, return scalarValue)
     TEMPLATE_1_INT(WaveReadLaneFirst, scalarValue, return scalarValue)
-    TEMPLATE_1_UINT(WaveReadLaneFirst, scalarValue, return scalarValue)
 #endif
 
 #ifndef INTRINSIC_MUL24
     TEMPLATE_2_INT(Mul24, a, b, return a * b)
-    TEMPLATE_2_UINT(Mul24, a, b, return a * b)
 #endif // INTRINSIC_MUL24
 
 #ifndef INTRINSIC_MAD24
     TEMPLATE_3_INT(Mad24, a, b, c, return a * b + c)
-    TEMPLATE_3_UINT(Mad24, a, b, c, return a * b + c)
 #endif // INTRINSIC_MAD24
 
 #ifndef INTRINSIC_MINMAX3
     TEMPLATE_3_REAL(Min3, a, b, c, return min(min(a, b), c))
     TEMPLATE_3_INT(Min3, a, b, c, return min(min(a, b), c))
-    TEMPLATE_3_UINT(Min3, a, b, c, return min(min(a, b), c))
     TEMPLATE_3_REAL(Max3, a, b, c, return max(max(a, b), c))
     TEMPLATE_3_INT(Max3, a, b, c, return max(max(a, b), c))
-    TEMPLATE_3_UINT(Max3, a, b, c, return max(max(a, b), c))
 #endif // INTRINSIC_MINMAX3
 
 TEMPLATE_SWAP(Swap) // Define a Swap(a, b) function for all types
@@ -341,7 +336,6 @@ real RadToDeg(real rad)
 // Square functions for cleaner code
 TEMPLATE_1_REAL(Sq, x, return x * x)
 TEMPLATE_1_INT(Sq, x, return x * x)
-TEMPLATE_1_UINT(Sq, x, return x * x)
 
 bool IsPower2(uint x)
 {

@@ -1,6 +1,19 @@
-#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Macros.hlsl"
-
 // This file assume SHADER_API_XBOXONE is defined
+
+#define GENERATE_INTRINSIC_VARIANTS_1_ARG(FunctionName, BaseIntrinsicName, Parameter0) \
+    float FunctionName(float Parameter0) { return BaseIntrinsicName##F32(Parameter0); } \
+    int   FunctionName(int   Parameter0) { return BaseIntrinsicName##I32(Parameter0); } \
+    uint  FunctionName(uint  Parameter0) { return BaseIntrinsicName##U32(Parameter0); }
+
+#define GENERATE_INTRINSIC_VARIANTS_3_ARGS(FunctionName, BaseIntrinsicName, Parameter0, Parameter1, Parameter2) \
+    float FunctionName(float Parameter0, float Parameter1, float Parameter2) { return BaseIntrinsicName##F32(Parameter0, Parameter1, Parameter2); } \
+    int   FunctionName(int   Parameter0, int   Parameter1, int   Parameter2) { return BaseIntrinsicName##I32(Parameter0, Parameter1, Parameter2); } \
+    uint  FunctionName(uint  Parameter0, uint  Parameter1, uint  Parameter2) { return BaseIntrinsicName##U32(Parameter0, Parameter1, Parameter2); }
+
+#define GENERATE_INTRINSIC_INT24_VARIANTS_3_ARGS(FunctionName, BaseIntrinsicName, Parameter0, Parameter1, Parameter2) \
+    int   FunctionName(int   Parameter0, int   Parameter1, int   Parameter2) { return BaseIntrinsicName##I24(Parameter0, Parameter1, Parameter2); } \
+    uint  FunctionName(uint  Parameter0, uint  Parameter1, uint  Parameter2) { return BaseIntrinsicName##U24(Parameter0, Parameter1, Parameter2); } 
+
 
 #define UNITY_UV_STARTS_AT_TOP 1
 #define UNITY_REVERSED_Z 1
@@ -37,30 +50,21 @@
 #define WaveActiveBitOr __XB_WaveOR
 
 #define INTRINSIC_MINMAX3
-TEMPLATE_3_REAL(Min3, a, b, c, return __XB_Min3_F32(a, b, c))
-TEMPLATE_3_INT(Min3, a, b, c, return __XB_Min3_I32(a, b, c))
-TEMPLATE_3_UINT(Min3, a, b, c, return __XB_Min3_U32(a, b, c))
-TEMPLATE_3_REAL(Max3, a, b, c, return __XB_Max3_F32(a, b, c))
-TEMPLATE_3_INT(Max3, a, b, c, return __XB_Max3_I32(a, b, c))
-TEMPLATE_3_UINT(Max3, a, b, c, return __XB_Max3_U32(a, b, c))
- 
+GENERATE_INTRINSIC_VARIANTS_3_ARGS(Min3, __XB_Min3_, a, b, c);
+GENERATE_INTRINSIC_VARIANTS_3_ARGS(Max3, __XB_Max3_, a, b, c);
 
 #define INTRINSIC_WAVE_MINMAX
-TEMPLATE_1_REAL(WaveActiveMin, value, return __XB_WaveMin_F32(value))
-TEMPLATE_1_INT(WaveActiveMin, value, return __XB_WaveMin_I32(value))
-TEMPLATE_1_UINT(WaveActiveMin, value, return __XB_WaveMin_U32(value))
-TEMPLATE_1_REAL(WaveActiveMax, value, return __XB_WaveMax_F32(value))
-TEMPLATE_1_UINT(WaveActiveMax, value, return __XB_WaveMax_U32(value))
-
-TEMPLATE_1_INT(WaveActiveMax, value, return __XB_WaveMax_I32(value))
-#define INTRINSIC_WAVE_SUM
-TEMPLATE_1_REAL(WaveActiveSum, value, return __XB_WaveAdd_F32(value))
-TEMPLATE_1_INT(WaveActiveSum, value, return __XB_WaveAdd_I32(value))
-TEMPLATE_1_UINT(WaveActiveSum, value, return __XB_WaveAdd_U32(value))
+GENERATE_INTRINSIC_VARIANTS_1_ARG(WaveActiveMin, __XB_WaveMin_, value);
+GENERATE_INTRINSIC_VARIANTS_1_ARG(WaveActiveMax, __XB_WaveMax_, value);
 
 #define INTRINSIC_MAD24
-TEMPLATE_3_INT(Mad24, a, b, c, return __XB_MadI24(a,b,c))
-TEMPLATE_3_UINT(Mad24, a, b, c, return __XB_MadU24(a, b, c))
+GENERATE_INTRINSIC_INT24_VARIANTS_3_ARGS(Mad24, __XB_Mad, a, b, c);
+
+#define INTRINSIC_WAVE_SUM
+float WaveActiveSum(float value)
+{
+    return __XB_WaveAdd_F32(value);
+}
 
 // flow control attributes
 #define UNITY_BRANCH        [branch]
