@@ -93,11 +93,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             var roots = scene.GetRootGameObjects();
             for (int i = 0; i < roots.Length; ++i)
             {
-                if (roots[i].name == SceneObjectIDMapSceneAsset.k_GameObjectName)
-                {
-                    map = roots[i].GetComponent<SceneObjectIDMapSceneAsset>();
+                if (roots[i].name == SceneObjectIDMapSceneAsset.k_GameObjectName
+                    && (map = roots[i].GetComponent<SceneObjectIDMapSceneAsset>()) != null
+                    && !map.Equals(null))
                     return true;
-                }
             }
             map = null;
             return false;
