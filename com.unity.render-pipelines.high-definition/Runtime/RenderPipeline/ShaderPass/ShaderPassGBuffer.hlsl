@@ -3,6 +3,7 @@
 #endif
 
 #include "VertMesh.hlsl"
+#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialGBufferMacros.hlsl"
 
 PackedVaryingsType Vert(AttributesMesh inputMesh)
 {

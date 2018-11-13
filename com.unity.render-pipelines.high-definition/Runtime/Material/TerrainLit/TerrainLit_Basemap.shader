@@ -117,7 +117,6 @@ Shader "Hidden/HDRenderPipeline/TerrainLit_Basemap"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "TerrainLitSharePass.hlsl"
             #include "TerrainLitData_Basemap.hlsl"
-            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialGBufferMacros.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassGBuffer.hlsl"
 
             ENDHLSL
