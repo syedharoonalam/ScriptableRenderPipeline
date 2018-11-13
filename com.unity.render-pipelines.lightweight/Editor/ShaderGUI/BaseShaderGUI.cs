@@ -208,10 +208,10 @@ namespace UnityEditor
         {
             materialEditor.EnableInstancingField();
 
-            if (queueOffsetProp != null)
+/*            if (queueOffsetProp != null)
             {
                 queueOffsetProp.floatValue = EditorGUILayout.IntSlider(Styles.queueSlider, (int)queueOffsetProp.floatValue, -queueOffsetRange, queueOffsetRange);
-            }
+            }*/
         }
 
         public virtual void DrawBaseProperties()
@@ -301,30 +301,33 @@ namespace UnityEditor
                 material.DisableKeyword("_ALPHATEST_ON");
             }
 
-            var queueOffset = queueOffsetRange;
-            if(material.HasProperty("_QueueOffset"))
-                queueOffset = queueOffsetRange - (int) material.GetFloat("_QueueOffset");
+            var queueOffset = 0; // queueOffsetRange;
+            //if(material.HasProperty("_QueueOffset"))
+            //    queueOffset = queueOffsetRange - (int) material.GetFloat("_QueueOffset");
 
             SurfaceType surfaceType = (SurfaceType)material.GetFloat("_Surface");
             if (surfaceType == SurfaceType.Opaque)
             {
                 if (alphaClip)
+                {
+                    material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest + queueOffset;
                     material.SetOverrideTag("RenderType", "TransparentCutout");
+                }
                 else
+                {
+                    material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Geometry + queueOffset;
                     material.SetOverrideTag("RenderType", "Opaque");
+                }
                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                 material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
                 material.SetInt("_ZWrite", 1);
                 material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Geometry + queueOffset;
                 material.SetShaderPassEnabled("ShadowCaster", true);
             }
             else
             {
                 BlendMode blendMode = (BlendMode)material.GetFloat("_Blend");
-                var queue = alphaClip
-                    ? (int) UnityEngine.Rendering.RenderQueue.AlphaTest
-                    : (int) UnityEngine.Rendering.RenderQueue.Transparent;
+                var queue = (int) UnityEngine.Rendering.RenderQueue.Transparent;
                 switch (blendMode)
                 {
                     case BlendMode.Alpha:
@@ -365,7 +368,6 @@ namespace UnityEditor
                         break;
                 }
             }
-            material.SetOverrideTag("RenderType", "TransparentCutout");
         }
 
         [MenuItem("CONTEXT/Material/Test", false, 999)]
