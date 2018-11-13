@@ -170,7 +170,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         textureProperty.defaultType = (TextureShaderProperty.DefaultType)evt.newValue;
                         DirtyNodes(ModificationScope.Graph);
                     });
-                void toggleDefaultModeFieldEnabled()
+                void ToggleDefaultModeFieldEnabled()
                 {
                     defaultModeField.SetEnabled(!defaultModeField.enabledSelf);
                 }
