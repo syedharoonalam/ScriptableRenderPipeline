@@ -18,19 +18,15 @@
 #define Max3 max3
 #define INTRINSIC_CUBEMAP_FACE_ID
 #define INTRINSIC_WAVE_MINMAX
-#define WaveMinInt CrossLaneMin
-#define WaveMinUint CrossLaneMin
-#define WaveMinFloat CrossLaneMin
-#define WaveMaxInt CrossLaneMax
-#define WaveMaxUint CrossLaneMax
-#define WaveMaxFloat CrossLaneMax
+#define WaveActiveMin CrossLaneMin
+#define WaveActiveMax CrossLaneMax
 #define INTRINSIC_BALLOT
-#define Ballot ballot
+#define WaveActiveBallot ballot
 #define INTRINSIC_WAVE_SUM
-#define WaveAdd CrossLaneAdd
+#define WaveActiveSum CrossLaneAdd
 #define INTRINSIC_WAVE_LOGICAL_OPS
-#define WaveAnd CrossLaneAnd
-#define WaveOr CrossLaneOr
+#define WaveActiveBitAnd CrossLaneAnd
+#define WaveActiveBitOr CrossLaneOr
 
 
 

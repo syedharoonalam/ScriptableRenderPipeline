@@ -217,7 +217,7 @@ DecalSurfaceData GetDecalSurfaceData(PositionInputs posInput, inout float alpha)
     #if SCALARIZE_LIGHT_LOOP
     // Fast path is when we all pixels in a wave are accessing same tile or cluster.
     uint decalStartLane0 = WaveReadLaneFirst(decalStart);
-    bool fastPath = all(Ballot(decalStart == decalStartLane0) == ~0);
+    bool fastPath = all(WaveActiveBallot(decalStart == decalStartLane0) == ~0);
     #endif
 
 #else // LIGHTLOOP_TILE_PASS
@@ -253,8 +253,8 @@ DecalSurfaceData GetDecalSurfaceData(PositionInputs posInput, inout float alpha)
         if (!fastPath)
         {
             // If we are not in fast path, v_lightIdx is not scalar, so we need to query the Min value across the wave. 
-            s_decalIdx = WaveMinUint(v_decalIdx);
-            // If WaveMinUint returns 0xffffffff it means that all lanes are actually dead, so we can safely ignore the loop and move forward.
+            s_decalIdx = WaveActiveMin(v_decalIdx);
+            // If WaveActiveMin returns 0xffffffff it means that all lanes are actually dead, so we can safely ignore the loop and move forward.
             // This could happen as an helper lane could reach this point, hence having a valid v_lightIdx, but their values will be ignored by the WaveMin
             if (s_decalIdx == -1)
             {
@@ -270,7 +270,7 @@ DecalSurfaceData GetDecalSurfaceData(PositionInputs posInput, inout float alpha)
         DecalData s_decalData = FetchDecal(s_decalIdx);
 
         // If current scalar and vector decal index match, we process the decal. The v_decalListOffset for current thread is increased.
-        // Note that the following should really be ==, however, since helper lanes are not considered by WaveMinUint, such helper lanes could
+        // Note that the following should really be ==, however, since helper lanes are not considered by WaveActiveMin, such helper lanes could
         // end up with a unique v_decalIdx value that is smaller than s_decalIdx hence being stuck in a loop. All the active lanes will not have this problem.
         if (s_decalIdx >= v_decalIdx)
         {

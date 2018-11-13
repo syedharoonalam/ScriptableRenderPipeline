@@ -74,6 +74,12 @@
     uint2  FunctionName(uint2  Parameter1) { FunctionBody; } \
     uint3  FunctionName(uint3  Parameter1) { FunctionBody; } \
     uint4  FunctionName(uint4  Parameter1) { FunctionBody; }
+
+    #define TEMPLATE_1_UINT(FunctionName, Parameter1, FunctionBody) \
+    uint   FunctionName(uint   Parameter1) { FunctionBody; } \
+    uint2  FunctionName(uint2  Parameter1) { FunctionBody; } \
+    uint3  FunctionName(uint3  Parameter1) { FunctionBody; } \
+    uint4  FunctionName(uint4  Parameter1) { FunctionBody; }
 #endif
 
 #define TEMPLATE_2_FLT(FunctionName, Parameter1, Parameter2, FunctionBody) \

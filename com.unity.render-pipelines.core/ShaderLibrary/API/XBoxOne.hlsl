@@ -1,3 +1,5 @@
+#include "Macros.hlsl"
+
 // This file assume SHADER_API_XBOXONE is defined
 
 #define UNITY_UV_STARTS_AT_TOP 1
@@ -34,20 +36,25 @@
 #define BitFieldExtractSignExtend __XB_IBFE
 #define INTRINSIC_BITFIELD_INSERT
 #define BitFieldInsert __XB_BFI
-#define INTRINSIC_WAVE_MINMAX
-#define WaveMinInt __XB_WaveMin_I32
-#define WaveMinUint __XB_WaveMin_U32
-#define WaveMinFloat __XB_WaveMin_F32
-#define WaveMaxInt __XB_WaveMax_I32
-#define WaveMaxUint __XB_WaveMax_U32
-#define WaveMaxFloat __XB_WaveMax_F32
 #define INTRINSIC_BALLOT
-#define Ballot __XB_Ballot64
-#define INTRINSIC_WAVE_SUM
-#define WaveAdd __XB_WaveAdd_F32
+#define WaveActiveBallot __XB_WaveActiveBallot64
 #define INTRINSIC_WAVE_LOGICAL_OPS
-#define WaveAnd __XB_WaveAND
-#define WaveOr __XB_WaveOR
+#define WaveActiveBitAnd __XB_WaveAND
+#define WaveActiveBitOr __XB_WaveOR
+
+#define INTRINSIC_WAVE_MINMAX
+TEMPLATE_1_REAL(WaveActiveMin, value, return __XB_WaveMin_F32(value))
+TEMPLATE_1_INT(WaveActiveMin, value, return __XB_WaveMin_I32(value))
+TEMPLATE_1_UINT(WaveActiveMin, value, return __XB_WaveMin_U32(value))
+TEMPLATE_1_REAL(WaveActiveMax, value, return __XB_WaveMax_F32(value))
+TEMPLATE_1_INT(WaveActiveMax, value, return __XB_WaveMax_I32(value))
+TEMPLATE_1_UINT(WaveActiveMax, value, return __XB_WaveMax_U32(value))
+
+#define INTRINSIC_WAVE_SUM
+TEMPLATE_1_REAL(WaveActiveSum, value, return __XB_WaveAdd_F32(value))
+TEMPLATE_1_INT(WaveActiveSum, value, return __XB_WaveAdd_I32(value))
+TEMPLATE_1_UINT(WaveActiveSum, value, return __XB_WaveAdd_U32(value))
+
 
 // flow control attributes
 #define UNITY_BRANCH        [branch]
