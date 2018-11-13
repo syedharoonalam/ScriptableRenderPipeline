@@ -11,8 +11,7 @@
 #define INTRINSIC_WaveReadLaneFirst
 #define WaveReadLaneFirst ReadFirstLane
 #define INTRINSIC_MAD24
-#define Mad24Int mad24
-#define Mad24Uint mad24
+#define Mad24 mad24
 #define INTRINSIC_MINMAX3
 #define Min3 min3
 #define Max3 max3
