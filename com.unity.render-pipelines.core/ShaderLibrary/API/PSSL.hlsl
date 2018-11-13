@@ -27,6 +27,10 @@
 #define WaveActiveBitAnd CrossLaneAnd
 #define WaveActiveBitOr CrossLaneOr
 
+bool WaveActiveAllTrue(bool expression)
+{
+    return (__s_read_exec() == WaveActiveBallot(expression));
+}
 
 
 #define UNITY_UV_STARTS_AT_TOP 1

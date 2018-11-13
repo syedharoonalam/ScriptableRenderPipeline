@@ -60,6 +60,12 @@ GENERATE_INTRINSIC_VARIANTS_1_ARG(WaveActiveMax, __XB_WaveMax_, value);
 #define INTRINSIC_MAD24
 GENERATE_INTRINSIC_INT24_VARIANTS_3_ARGS(Mad24, __XB_Mad, a, b, c);
 
+
+bool WaveActiveAllTrue(bool expression)
+{
+    return all(WaveActiveBallot(true) == WaveActiveBallot(expression));
+}
+
 #define INTRINSIC_WAVE_SUM
 float WaveActiveSum(float value)
 {
