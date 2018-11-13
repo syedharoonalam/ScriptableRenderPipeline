@@ -44,7 +44,7 @@
 #define INTRINSIC_BITFIELD_INSERT
 #define BitFieldInsert __XB_BFI
 #define INTRINSIC_BALLOT
-#define WaveActiveBallot __XB_WaveActiveBallot64
+#define WaveActiveBallot __XB_Ballot64
 #define INTRINSIC_WAVE_LOGICAL_OPS
 #define WaveActiveBitAnd __XB_WaveAND
 #define WaveActiveBitOr __XB_WaveOR
